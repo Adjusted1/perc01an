@@ -21,11 +21,11 @@ cellular automata will dynamically tune 'lan flooding' aggressiveness and provid
 
 starts p2p progogation when one or more of these conditions occur:
 
-strong, nearby earthquake.
-strong collision.
-excessive temperature.
-earthquake alert recvd.
-your cat runs out of wet food.
+* strong, nearby earthquake (ML - I'm looking for the 'best' pretrained model!)
+* strong collision (sensor inference)
+* excessive temperature (sensor)
+* earthquake alert recvd (external app consumer possibly, or - ?)
+* your cat runs out of wet food (meow ^..^)
 
 --- internal notes
 Gatt Sequence for bare bones "scan and add to device list" tests:
