@@ -28,3 +28,23 @@ strong collision.
 excessive temperature.
 earthquake alert recvd.
 your cat runs out of wet food.
+
+Gatt Sequence for bare bones "scan and add to device list" tests:
+---
+[BluetoothLeScanner] Start Scan with callback
+[BluetoothLeScanner] onScannerRegistered() - status=0 scannerId=7 mScannerId=0
+[BluetoothAdapter] STATE_ON
+[BluetoothAdapter] STATE_ON
+[BluetoothLeScanner] Stop Scan with callback
+[BluetoothAdapter] STATE_ON
+[BluetoothAdapter] STATE_ON
+[BluetoothAdapter] STATE_ON
+[BluetoothAdapter] STATE_ON
+[BluetoothLeScanner] Start Scan with callback
+[BluetoothLeScanner] onScannerRegistered() - status=0 scannerId=7 mScannerId=0
+Thread finished: <Thread Pool> #2
+Thread started: <Thread Pool> #10
+The thread 0x2 has exited with code 0 (0x0).
+[BluetoothAdapter] STATE_ON
+[BluetoothAdapter] STATE_ON
+[BluetoothLeScanner] Stop Scan with callback
