@@ -3,6 +3,7 @@
 perc01an
 -> Much thanks to author of android gps service I apply in this app https://github.com/shernandezp/XamarinForms.LocationService <-
 
+
 Android* [for now, ios later] based rescue recovery tool for densely populated areas. After a natural or other disaster it allows p2p propogation of last known location of cell phone using bluetooth.
 
 It employs a cellular automata tuned, p2p protocol piggybacking on Bluetooth for the purpose of gps info propagation in the wake of failed wifi/cell. Cellular automata will dynamically tune best route decisions to avoid bottlenecks.
