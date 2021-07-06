@@ -12,3 +12,5 @@ Legal Disclaimer: This App advertises your GPS location within the range and lim
 Android [for now, ios later] based *rescue recovery tool for densely populated areas*. After a natural or other disaster it allows p2p propogation of last known location of cell phone using bluetooth name advertisements as the messenger.
 
 After a natural disaster/emergency, Nearby Android Cell Phones running this App will catch and hold all GPS coordinates from other perc01an enabled cell phones, and propogate a randomly selected GPS for a fixed time interval. GPS coordinates of cell phones next to people buried in rubble (for instance) will be propogated across nearby perc01an cell phone users, allowing rescue of persons next to their phones by GPS coordinates via nearby perc01an clients who can use their harvested, local gps coordinates as locater information.
+
+Offline GPS mapping will start mapping neighbors once peer GPS coordinates are harvested from Bluetooth advertisements from perc01an peers.
