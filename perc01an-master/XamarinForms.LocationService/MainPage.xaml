@@ -74,12 +74,13 @@
             </Label>
             <Label Text="{Binding UserMessage}" VerticalOptions="CenterAndExpand"/>
         </StackLayout>
-        
-    </AbsoluteLayout>
-    <BoxView Color="CornflowerBlue"
+        <BoxView Color="CornflowerBlue"
              CornerRadius="10"
              WidthRequest="160"
              HeightRequest="160"
              VerticalOptions="Center"
-             HorizontalOptions="Center" />
+             HorizontalOptions="Center"
+             AbsoluteLayout.LayoutBounds="{Binding x0}, {Binding y0}, {Binding X0}, {Binding Y0}" />
+    </AbsoluteLayout>
+    
 </ContentPage>
