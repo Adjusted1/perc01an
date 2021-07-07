@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:XamarinForms.LocationService.ViewModels"
+             x:Class="XamarinForms.LocationService.MainPage">
+    <ContentPage.BindingContext>
+        <vm:MainPageViewModel />
+    </ContentPage.BindingContext>
+    
+    <AbsoluteLayout>
+        <StackLayout Margin="0,0,0,0">
+            <Grid BackgroundColor="LightBlue">
+
+                <Label LineBreakMode="NoWrap"
+            Grid.Row="0" Grid.Column="0" 
+            Text="{Binding SsidNeighZero}"
+            />
+                    <Label LineBreakMode="NoWrap"
+            Grid.Row="0" Grid.Column="1" 
+            Text="{Binding SsidNeighOne}"
+            />
+                    <Label LineBreakMode="NoWrap"
+            Grid.Row="0" Grid.Column="2" 
+            Text="{Binding SsidNeighTwo}"
+            />
+                    <Label LineBreakMode="NoWrap"
+            Grid.Row="1" Grid.Column="0" 
+            Text="{Binding SsidNeighThree}"
+            />
+                    <Label LineBreakMode="NoWrap"
+            Grid.Row="1" Grid.Column="1" 
+            Text="{Binding Scanning}"
+            />
+                    <Label LineBreakMode="NoWrap"
+            Grid.Row="1" Grid.Column="2" 
+            Text="{Binding SsidNeighFour}"
+            />
+                    <Label LineBreakMode="NoWrap"
+            Grid.Row="2" Grid.Column="0" 
+            Text="{Binding SsidNeighFive}"
+            />
+                    <Label LineBreakMode="NoWrap"
+            Grid.Row="2" Grid.Column="1" 
+            Text="{Binding SsidNeighSix}"
+            />
+                <Label LineBreakMode="NoWrap"
+            Grid.Row="2" Grid.Column="2" 
+            Text="{Binding SsidNeighSeven}"
+            />
+            </Grid>
+            <Button VerticalOptions="CenterAndExpand"
+                Text="Start"
+                Command="{Binding StartCommand}"
+                IsEnabled="{Binding StartEnabled}"/>
+            <Button VerticalOptions="CenterAndExpand"
+                Text="Stop"
+                Command="{Binding EndCommand}"
+                IsEnabled="{Binding StopEnabled}"/>
+            <Button VerticalOptions="CenterAndExpand"
+                Text="not impl."
+                Command="{Binding LoadLog}"
+                IsEnabled="True"/>
+            
+           
+            <Label>
+                <Label.FormattedText>
+                    <FormattedString>
+                        <FormattedString.Spans>
+                            <Span Text=""/>
+                            <Span Text="{Binding Ssid}"/>
+                        </FormattedString.Spans>
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+            <Label Text="{Binding UserMessage}" VerticalOptions="CenterAndExpand"/>
+        </StackLayout>
+    </AbsoluteLayout>
+</ContentPage>
