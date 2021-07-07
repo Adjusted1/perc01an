@@ -25,7 +25,7 @@ namespace XamarinForms.LocationService.Services
 
         
         
-        public static Dictionary<string, CartesianVector> CartesianLocation= new Dictionary<string, CartesianVector>(); // string is BL hardware Addr
+        //public static Dictionary<string, CartesianVector> CartesianLocation= new Dictionary<string, CartesianVector>(); // string is BL hardware Addr
 
         public static List<Plugin.BLE.Abstractions.Contracts.IDevice> deviceList = new List<Plugin.BLE.Abstractions.Contracts.IDevice>();
 
@@ -82,8 +82,7 @@ namespace XamarinForms.LocationService.Services
             numNeighs = 0;
             deviceList.Clear();
             await adapter.StartScanningForDevicesAsync();
-            CartesianVector cv = null;
-            ConnectToNeighbors(deviceList, numNeighs, adapter, cv);
+            ConnectToNeighbors(deviceList, numNeighs, adapter);
             numNeighs = GetLikelyToBeHumanNeighCount(deviceList);
             CombinedSsids = "|Neigh:" + numNeighs;
             AndroidBluetoothSetLocalName(lastSsid);
@@ -105,8 +104,7 @@ namespace XamarinForms.LocationService.Services
             return i;
         }
         private static void ConnectToNeighbors(List<Plugin.BLE.Abstractions.Contracts.IDevice> devices, int i, 
-                                               Plugin.BLE.Abstractions.Contracts.IAdapter adapter, 
-                                               CartesianVector cv)
+                                               Plugin.BLE.Abstractions.Contracts.IAdapter adapter)
         {
             recvdFrom = _random.Next(0, 7);
             try
@@ -120,7 +118,7 @@ namespace XamarinForms.LocationService.Services
                 {
                     lastSsid = devices[recvdFrom].Name;
                     Mapper.Update(recvdFrom, lastSsid);
-                    CartesianLocation.Add(devices[recvdFrom].Id.ToString(), cv = new CartesianVector(lat, lng));
+                    //CartesianLocation.Add(devices[recvdFrom].Id.ToString(), cv = new CartesianVector(lat, lng));
                 }
             }
             catch (DeviceConnectionException e)
@@ -253,20 +251,7 @@ namespace XamarinForms.LocationService.Services
                 base.OnStartSuccess(settingsInEffect);
             }
         }
-        public class CartesianVector
-        {
-            public double x { get; set; } = 0.0;
-            public double y { get; set; } = 0.0;
-            public double z { get; set; } = 0.0;
-
-            const double R = 6371000; // Radius earth in meters
-            public CartesianVector(double lat, double lng) 
-            {
-                x = R * Math.Cos(lat) * Math.Cos(lng);
-                y = R * Math.Cos(lat) * Math.Sin(lng);
-                z = R * Math.Sin(lat);
-            }
-        }
+       
     }
     
 }
