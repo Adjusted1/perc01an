@@ -16,39 +16,38 @@ namespace XamarinForms.LocationService.Services
         public static void Update(int neighNum, string GPScommaSep)
         {
             NeighNumber_GPS_Mapper[neighNum] = GPScommaSep;
-            Show(GPScommaSep);
+            Show(GPScommaSep, neighNum);
         }
-        public static void Show(string gps)
+        public static void Show(string gps, int neighNum)
         {
             string[] gpsSplit = gps.Split(",");
             double lat = double.Parse(gpsSplit[0], System.Globalization.CultureInfo.InvariantCulture);
             double lng = double.Parse(gpsSplit[1], System.Globalization.CultureInfo.InvariantCulture);
             CartesianVector v = new CartesianVector(lat, lng);
-
-            var message = new LocationMessage
+#if DEBUG
+            neighNum = 0;
+#endif
+            if (neighNum == 0)
             {
-                SsidNeighZero = p2p.Ssidneighzero,
-                SsidNeighOne = p2p.Ssidneighone,
-                SsidNeighTwo = p2p.Ssidneightwo,
-                SsidNeighThree = p2p.Ssidneighthree,
-                SsidNeighFour = p2p.Ssidneighfour,
-                SsidNeighFive = p2p.Ssidneighfive,
-                SsidNeighSix = p2p.Ssidneighsix,
-                SsidNeighSeven = p2p.Ssidneighseven,
-            };
-            try
-            {
-                Device.BeginInvokeOnMainThread(() =>
+                var message = new LocationMessage
                 {
-                    MessagingCenter.Send<LocationMessage>(message, "Location");
-                });
-            }
-            catch (Exception e)
-            {
-                Device.BeginInvokeOnMainThread(() =>
+                    X0 = v.x.ToString(),
+                    Y0 = v.y.ToString(),
+                };
+                try
                 {
-                    MessagingCenter.Send<LocationMessage>(message, "Location");
-                });
+                    Device.BeginInvokeOnMainThread(() =>
+                    {
+                        MessagingCenter.Send<LocationMessage>(message, "Location");
+                    });
+                }
+                catch (Exception e)
+                {
+                    Device.BeginInvokeOnMainThread(() =>
+                    {
+                        MessagingCenter.Send<LocationMessage>(message, "Location");
+                    });
+                }
             }
         }
         public class CartesianVector
@@ -56,13 +55,27 @@ namespace XamarinForms.LocationService.Services
             public double x { get; set; } = 0.0;
             public double y { get; set; } = 0.0;
             public double z { get; set; } = 0.0;
-
+            
+            /*
+             * normalize formula:
+             * newvalue= (max'-min')/(max-min)*(value-min)+min'.
+             * 
+             */
             const double R = 6371000; // Radius earth in meters
             public CartesianVector(double lat, double lng)
             {
                 x = R * Math.Cos(lat) * Math.Cos(lng);
                 y = R * Math.Cos(lat) * Math.Sin(lng);
                 z = R * Math.Sin(lat);
+                Normalizer();
+            }
+            private void Normalizer()
+            {
+                // x = x-minx/(maxx - minx)
+
+                x = x / 100;
+                y = y / 100;
+                z = z / 100;
             }
         }
     }

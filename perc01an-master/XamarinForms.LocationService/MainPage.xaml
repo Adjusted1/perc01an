@@ -80,7 +80,7 @@
              HeightRequest="160"
              VerticalOptions="Center"
              HorizontalOptions="Center"
-             AbsoluteLayout.LayoutBounds="{Binding x0}, {Binding y0}, {Binding X0}, {Binding Y0}" />
+             AbsoluteLayout.LayoutBounds="{Binding X0,Y0,X0,Y0}" />
     </AbsoluteLayout>
     
 </ContentPage>

@@ -24,6 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Google.Api.CommonProtos" Version="2.3.0" />
     <PackageReference Include="MathNet.Numerics" Version="4.15.0" />
     <PackageReference Include="Plugin.BLE" Version="2.1.2" />    
     <PackageReference Include="Xamarin.Forms" Version="5.0.0.2012" />
