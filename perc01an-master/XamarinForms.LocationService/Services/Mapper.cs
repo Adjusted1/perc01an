@@ -11,12 +11,11 @@ namespace XamarinForms.LocationService.Services
     static class Mapper
     {
         //  NeighNumber_GPS_Mapper[0] = this devices gps coord, lat + "," + lng
-        public static ConcurrentDictionary<int, string> NeighNumber_GPS_Mapper { get; set; }
+        public static ConcurrentDictionary<int, string> NeighNumber_GPS_Mapper = new ConcurrentDictionary<int, string>();
 
         public static void Update(int neighNum, string GPScommaSep)
         {
-            NeighNumber_GPS_Mapper[neighNum] = GPScommaSep;
-            Show(GPScommaSep, neighNum);
+            NeighNumber_GPS_Mapper[neighNum] = GPScommaSep;            
         }
         public static void Show(string gps, int neighNum)
         {

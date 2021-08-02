@@ -11,7 +11,7 @@
         <StackLayout Margin="0,0,0,0">
             <Grid BackgroundColor="LightBlue">
 
-                <Label LineBreakMode="NoWrap"
+                    <Label LineBreakMode="NoWrap"
             Grid.Row="0" Grid.Column="0" 
             Text="{Binding SsidNeighZero}"
             />
@@ -43,7 +43,7 @@
             Grid.Row="2" Grid.Column="1" 
             Text="{Binding SsidNeighSix}"
             />
-                <Label LineBreakMode="NoWrap"
+                    <Label LineBreakMode="NoWrap"
             Grid.Row="2" Grid.Column="2" 
             Text="{Binding SsidNeighSeven}"
             />
@@ -74,13 +74,13 @@
             </Label>
             <Label Text="{Binding UserMessage}" VerticalOptions="CenterAndExpand"/>
         </StackLayout>
-        <BoxView Color="CornflowerBlue"
+        <!--<BoxView Color="CornflowerBlue"
              CornerRadius="10"
              WidthRequest="160"
              HeightRequest="160"
              VerticalOptions="Center"
              HorizontalOptions="Center"
-             AbsoluteLayout.LayoutBounds="{Binding X0,Y0,X0,Y0}" />
+             AbsoluteLayout.LayoutBounds="{Binding X0,Y0,X0,Y0}" />-->
     </AbsoluteLayout>
     
 </ContentPage>

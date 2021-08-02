@@ -3,6 +3,7 @@ using Xamarin.Forms;
 using XamarinForms.LocationService.Messages;
 using XamarinForms.LocationService.Utils;
 using XamarinForms.LocationService.Services;
+using System.Collections.Generic;
 
 namespace XamarinForms.LocationService.ViewModels
 {
