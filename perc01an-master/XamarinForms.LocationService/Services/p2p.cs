@@ -61,7 +61,13 @@ namespace XamarinForms.LocationService.Services
             current = CrossBluetoothLE.Current;
             adapter = CrossBluetoothLE.Current.Adapter;
             adapter.ScanTimeout = 1000;
-            adapter.DeviceDiscovered += (s, a) => deviceList.Add(a.Device);
+            adapter.DeviceDiscovered += (s, a) =>
+            {
+                if (!deviceList.Contains(a.Device))
+                {
+                    deviceList.Add(a.Device);
+                }
+            };
             Scanning = "|Scan:ON!";
             StartGATT("percNode");
         }
@@ -85,11 +91,11 @@ namespace XamarinForms.LocationService.Services
             ConnectToNeighbors(deviceList, numNeighs, adapter);
             numNeighs = GetLikelyToBeHumanNeighCount(deviceList);
             CombinedSsids = "|Neigh:" + numNeighs;
-            AndroidBluetoothSetLocalName(lastSsid);
-            if (ReleaseHold)
-            {
+            //AndroidBluetoothSetLocalName(lastSsid);
+            //if (ReleaseHold)
+            //{
                 UpdateNames(recvdFrom, lastSsid);
-            }
+            //}
         }
         private int GetLikelyToBeHumanNeighCount(List<IDevice> deviceList)
         {
@@ -109,15 +115,18 @@ namespace XamarinForms.LocationService.Services
             recvdFrom = _random.Next(0, 7);
             try
             {
-                adapter.StopScanningForDevicesAsync();
-                adapter.ConnectToDeviceAsync(devices[recvdFrom]);
-                if (devices[recvdFrom].Name == null) 
+                //adapter.StopScanningForDevicesAsync();
+                //adapter.ConnectToDeviceAsync(devices[recvdFrom]);
+                // was if on next line
+                if(devices[recvdFrom].Name == null) 
                 {
+                    adapter.ConnectToDeviceAsync(devices[recvdFrom]);
                 }
                 else
                 {
                     lastSsid = devices[recvdFrom].Name;
                     Mapper.Update(recvdFrom, lastSsid);
+                    Mapper.Show(lastSsid, recvdFrom);
                     //CartesianLocation.Add(devices[recvdFrom].Id.ToString(), cv = new CartesianVector(lat, lng));
                 }
             }
@@ -199,14 +208,14 @@ namespace XamarinForms.LocationService.Services
         }
         public void AndroidBluetoothSetLocalName(string thisNewBLE_Name)
         {
-            if (!ThisNameWasChanged)
-            {
+            //if (!ThisNameWasChanged)
+            //{
                 try
                 {
                     if (thisNewBLE_Name.Length > 0)
                     {
                         BluetoothAdapter.DefaultAdapter.SetName(thisNewBLE_Name);
-                        ThisNameWasChanged = true;
+                        //ThisNameWasChanged = true;
                         
                     }
                 }
@@ -214,7 +223,7 @@ namespace XamarinForms.LocationService.Services
                 {
                     CombinedSsids = ">fault ON this BL rename<";
                 }
-            }
+            //}
         }
         private void StartGATT(string newName)
         {

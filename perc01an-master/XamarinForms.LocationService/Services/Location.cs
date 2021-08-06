@@ -52,14 +52,16 @@ namespace XamarinForms.LocationService.Services
         //public Location(bool suppress) { }       
         public async Task Run(CancellationToken token)
         {
+            
             p2p = new p2p();
             {
+                //p2p.lastSsid = "waiting for data";
                 while (!stopping)
                 {
                     var request = new GeolocationRequest(GeolocationAccuracy.Best);
                     var location = await Geolocation.GetLocationAsync(request);
 
-                    //p2p.AndroidBluetoothSetLocalName(location.Latitude.ToString() + "," + location.Longitude.ToString());
+                    p2p.AndroidBluetoothSetLocalName(location.Latitude.ToString() + "," + location.Longitude.ToString());
 
                     token.ThrowIfCancellationRequested();
                     await Task.Run(async() =>
