@@ -61,7 +61,7 @@ namespace XamarinForms.LocationService.Services
                     var request = new GeolocationRequest(GeolocationAccuracy.Best);
                     var location = await Geolocation.GetLocationAsync(request);
 
-                    p2p.AndroidBluetoothSetLocalName(location.Latitude.ToString() + "," + location.Longitude.ToString());
+                    //p2p.AndroidBluetoothSetLocalName(location.Latitude.ToString() + "," + location.Longitude.ToString());
 
                     token.ThrowIfCancellationRequested();
                     await Task.Run(async() =>
@@ -88,7 +88,7 @@ namespace XamarinForms.LocationService.Services
                                 {
                                     Latitude = location.Latitude,
                                     Longitude = location.Longitude,
-                                    Ssid = p2p.CombinedSsids + System.Environment.NewLine + "|my lat:" + location.Latitude.ToString() + "|my long:" + location.Longitude.ToString(),
+                                    Ssid = location.Latitude.ToString() + "," + location.Longitude.ToString(),
                                     SsidNeighZero = p2p.Ssidneighzero,
                                     SsidNeighOne = p2p.Ssidneighone,
                                     SsidNeighTwo = p2p.Ssidneightwo,
