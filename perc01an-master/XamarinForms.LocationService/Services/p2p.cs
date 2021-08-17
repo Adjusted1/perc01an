@@ -57,8 +57,7 @@ namespace XamarinForms.LocationService.Services
 
         public p2p()
         {
-            Lock = new object();
-            StartTimer(3000);
+            Lock = new object();            
             current = CrossBluetoothLE.Current;
             adapter = CrossBluetoothLE.Current.Adapter;
             adapter.ScanTimeout = 1000;
@@ -88,6 +87,10 @@ namespace XamarinForms.LocationService.Services
         }
         public async Task GetNeighs(double lat, double lng)
         {
+            if(doneScanning)
+            {
+                adapter.StopScanningForDevicesAsync();
+            }
             numNeighs = 0;
             //deviceList.Clear();
             //await adapter.StartScanningForDevicesAsync();
@@ -100,6 +103,8 @@ namespace XamarinForms.LocationService.Services
             UpdateNames(recvdFrom, lastSsid);
             StopGATT();
             AndroidBluetoothSetLocalName(lastSsid);
+            await Task.Delay(5000);
+            StartGATT();
             //}
         }
         private int GetLikelyToBeHumanNeighCount(List<IDevice> deviceList)
