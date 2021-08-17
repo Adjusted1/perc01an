@@ -69,6 +69,10 @@ namespace XamarinForms.LocationService.Services
                 //p2p.lastSsid = "waiting for data";
                 while (!stopping)
                 {
+                    if(stopping)
+                    {
+                         p2p.doneScanning = true;   
+                    }
                     var request = new GeolocationRequest(GeolocationAccuracy.Best);
                     var location = await Geolocation.GetLocationAsync(request);
 
