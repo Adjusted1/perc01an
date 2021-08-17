@@ -58,7 +58,12 @@ namespace XamarinForms.LocationService.Services
         //public Location(bool suppress) { }       
         public async Task Run(CancellationToken token)
         {
-            
+            //
+            // why I'm using await Task.Run(async ()
+            // sometimes I/O-bound operations are blocking and they don't provide a fully asynchronous API; 
+            // in that case, it would be proper use await Task.Run to block a background thread 
+            // instead of the UI thread even though the operation is technically I/O-bound and not CPU-bound.
+            //
             p2p = new p2p();
             {
                 //p2p.lastSsid = "waiting for data";
@@ -82,6 +87,7 @@ namespace XamarinForms.LocationService.Services
 
                         }
                     }, token);
+                    
                     await Task.Run(async () =>
                     {
                         try
