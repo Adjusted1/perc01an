@@ -48,7 +48,7 @@ namespace XamarinForms.LocationService.Services
         private static Xamarin.Essentials.Location LocFomNeighStr(string neighStr)
         {
             string[] lat_long = neighStr.Split(',');
-            Location L = new Location(lat_long[0], lat_long[1]);
+            Xamarin.Essentials.Location L = new Xamarin.Essentials.Location();// = new Location(lat_long[0] + lat_long[1]);
             return L;            
         }
         
@@ -112,14 +112,14 @@ namespace XamarinForms.LocationService.Services
                                     Latitude = location.Latitude,
                                     Longitude = location.Longitude,
                                     Ssid = location.Latitude.ToString() + "," + location.Longitude.ToString(),
-                                    SsidNeighZero = dist0,
-                                    SsidNeighOne = dist1,
-                                    SsidNeighTwo = dist2,
-                                    SsidNeighThree = dist3,
-                                    SsidNeighFour = dist4,
-                                    SsidNeighFive = dist5,
-                                    SsidNeighSix = dist6,
-                                    SsidNeighSeven = dist7,
+                                    SsidNeighZero = dist0.ToString(),
+                                    SsidNeighOne = dist1.ToString(),
+                                    SsidNeighTwo = dist2.ToString(),
+                                    SsidNeighThree = dist3.ToString(),
+                                    SsidNeighFour = dist4.ToString(),
+                                    SsidNeighFive = dist5.ToString(),
+                                    SsidNeighSix = dist6.ToString(),
+                                    SsidNeighSeven = dist7.ToString(),
                                     Scanning = p2p.Scanning
                                 };
                                 Device.BeginInvokeOnMainThread(() =>

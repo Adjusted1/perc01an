@@ -104,7 +104,7 @@ namespace XamarinForms.LocationService.Services
             StopGATT();
             AndroidBluetoothSetLocalName(lastSsid);
             await Task.Delay(5000);
-            StartGATT();
+            StartGATT(lastSsid);
             //}
         }
         private int GetLikelyToBeHumanNeighCount(List<IDevice> deviceList)
@@ -160,7 +160,7 @@ namespace XamarinForms.LocationService.Services
         {
              lock(_random) // synchronize
              {
-                 return getrandom.Next(min, max);
+                 return _random.Next(min, max);
              }
         }
         public void UpdateNames(int recvFrom, string lastSSID)
