@@ -16,7 +16,8 @@ using Android.OS;
 using Android.Runtime;
 using Plugin.BLE.Abstractions.Exceptions;
 using Plugin.BLE.Abstractions.Contracts;
-
+//lat -90 to 90
+//long -180 to 180
 namespace XamarinForms.LocationService.Services
 {
     class p2p : Location
@@ -98,7 +99,7 @@ namespace XamarinForms.LocationService.Services
             //{
             UpdateNames(recvdFrom, lastSsid);
             StopGATT();
-            AndroidBluetoothSetLocalName("hello-----" + lastSsid);
+            AndroidBluetoothSetLocalName(lastSsid);
             //}
         }
         private int GetLikelyToBeHumanNeighCount(List<IDevice> deviceList)
@@ -150,8 +151,20 @@ namespace XamarinForms.LocationService.Services
         {
 
         }
+        public static int GetRandomNumber(int min, int max)
+        {
+             lock(_random) // synchronize
+             {
+                 return getrandom.Next(min, max);
+             }
+        }
         public void UpdateNames(int recvFrom, string lastSSID)
         {
+            // mock mock mock location for testing with no neighbors
+            var lastSSIDLat = GetRandomNumber(-90,90);
+            var lastSSIDLong = GetRandomNumber(-180,180);
+            lastSSID = lastSSIDLat + "," + lastSSIDLong;
+            // end mock
 
             try
             {
