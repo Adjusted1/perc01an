@@ -52,6 +52,8 @@ namespace XamarinForms.LocationService.Services
         public object Lock;
         public static Random _random = new Random();
 
+        public static bool debugging = true;
+
         Plugin.BLE.Abstractions.Contracts.IBluetoothLE current;
         Plugin.BLE.Abstractions.Contracts.IAdapter adapter;
 
@@ -103,7 +105,7 @@ namespace XamarinForms.LocationService.Services
             UpdateNames(recvdFrom, lastSsid);
             StopGATT();
             AndroidBluetoothSetLocalName(lastSsid);
-            await Task.Delay(5000);
+            //await Task.Delay(5000);
             StartGATT(lastSsid);
             //}
         }
@@ -122,34 +124,40 @@ namespace XamarinForms.LocationService.Services
         private static void ConnectToNeighbors(List<Plugin.BLE.Abstractions.Contracts.IDevice> devices, int i,
                                                Plugin.BLE.Abstractions.Contracts.IAdapter adapter)
         {
-            recvdFrom = _random.Next(0, 7);
-            try
+            if (!debugging)
             {
-                //adapter.StopScanningForDevicesAsync();
-                //adapter.ConnectToDeviceAsync(devices[recvdFrom]);
-                // was if on next line
-                if (devices[recvdFrom].Name == null)
+                // run if not in debug mode
+                recvdFrom = _random.Next(0, 7);
+                try
                 {
-                    adapter.ConnectToDeviceAsync(devices[recvdFrom]);
+                    //adapter.StopScanningForDevicesAsync();
+                    //adapter.ConnectToDeviceAsync(devices[recvdFrom]);
+                    // was if on next line
+                    if (devices[recvdFrom].Name == null)
+                    {
+                        adapter.ConnectToDeviceAsync(devices[recvdFrom]);
+
+                    }
+                    else
+                    {
+                        lastSsid = devices[recvdFrom].Name;
+
+                        //Mapper.Update(recvdFrom, lastSsid);
+
+                        // exception here
+                        //Mapper.Show(lastSsid, recvdFrom);
+                        // end exception
+
+                        //CartesianLocation.Add(devices[recvdFrom].Id.ToString(), cv = new CartesianVector(lat, lng));
+                    }
+                }
+                catch (DeviceConnectionException e)
+                {
 
                 }
-                else
-                {
-                    lastSsid = devices[recvdFrom].Name;
-                    
-                    //Mapper.Update(recvdFrom, lastSsid);
-
-                    // exception here
-                    //Mapper.Show(lastSsid, recvdFrom);
-                    // end exception
-
-                    //CartesianLocation.Add(devices[recvdFrom].Id.ToString(), cv = new CartesianVector(lat, lng));
-                }
             }
-            catch (DeviceConnectionException e)
-            {
 
-            }
+
 
         }
         private static void GetPeerNames()

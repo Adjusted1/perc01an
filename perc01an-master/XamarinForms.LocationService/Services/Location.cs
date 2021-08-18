@@ -48,7 +48,9 @@ namespace XamarinForms.LocationService.Services
         private static Xamarin.Essentials.Location LocFomNeighStr(string neighStr)
         {
             string[] lat_long = neighStr.Split(',');
-            Xamarin.Essentials.Location L = new Xamarin.Essentials.Location();// = new Location(lat_long[0] + lat_long[1]);
+            double lat = double.Parse(lat_long[0], System.Globalization.CultureInfo.InvariantCulture);
+            double lon = double.Parse(lat_long[1], System.Globalization.CultureInfo.InvariantCulture);
+            Xamarin.Essentials.Location L = new Xamarin.Essentials.Location(lat,lon);// = new Location(lat_long[0] + lat_long[1]);
             return L;            
         }
         
@@ -99,6 +101,7 @@ namespace XamarinForms.LocationService.Services
                             
                             if (location != null)
                             {
+                                // always same value w/diff gps wtf
                                 double dist0 = CalculateDistance(LocFomNeighStr(p2p.Ssidneighzero), location);
                                 double dist1 = CalculateDistance(LocFomNeighStr(p2p.Ssidneighone), location);
                                 double dist2 = CalculateDistance(LocFomNeighStr(p2p.Ssidneightwo), location);
