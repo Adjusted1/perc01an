@@ -33,7 +33,7 @@ namespace XamarinForms.LocationService.Services
         private int numNeighs = 0;
         public static string lastSsid = "";
         public static string MyNewName = "";
-        public static string CombinedSsids = "";
+        public static List<string> CombinedSsids { get; set; }
         public static string filepath = "";
         public static bool doneScanning = false;
         public static int recvdFrom = 0;
@@ -59,6 +59,7 @@ namespace XamarinForms.LocationService.Services
 
         public p2p()
         {
+            CombinedSsids = new List<string>();
             Lock = new object();            
             current = CrossBluetoothLE.Current;
             adapter = CrossBluetoothLE.Current.Adapter;
@@ -94,12 +95,9 @@ namespace XamarinForms.LocationService.Services
                 adapter.StopScanningForDevicesAsync();
             }
             numNeighs = 0;
-            //deviceList.Clear();
-            //await adapter.StartScanningForDevicesAsync();
             ConnectToNeighbors(deviceList, numNeighs, adapter);
             numNeighs = GetLikelyToBeHumanNeighCount(deviceList);
-            CombinedSsids = numNeighs.ToString();
-            AndroidBluetoothSetLocalName(CombinedSsids);
+            AndroidBluetoothSetLocalName(lastSsid);
             //if (ReleaseHold)
             //{
             UpdateNames(recvdFrom, lastSsid);
@@ -173,12 +171,14 @@ namespace XamarinForms.LocationService.Services
         }
         public void UpdateNames(int recvFrom, string lastSSID)
         {
-            // mock mock mock location for testing with no neighbors
-            var lastSSIDLat = GetRandomNumber(-90,90);
-            var lastSSIDLong = GetRandomNumber(-180,180);
-            lastSSID = lastSSIDLat + "," + lastSSIDLong;
-            // end mock
-
+            CombinedSsids.Add(lastSSID + "|");
+            if (debugging)
+            {
+                var lastSSIDLat = GetRandomNumber(-90, 90);
+                var lastSSIDLong = GetRandomNumber(-180, 180);
+                lastSSID = lastSSIDLat + "," + lastSSIDLong;
+                recvdFrom = GetRandomNumber(0, 7);
+            }
             try
             {
                 if (recvFrom == 0)
@@ -219,13 +219,7 @@ namespace XamarinForms.LocationService.Services
             }
 
         }
-        public void LogData()
-        {
-            byte[] data = Encoding.ASCII.GetBytes(CombinedSsids);
-            string DownloadsPath = Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, Android.OS.Environment.DirectoryDownloads);
-            filepath = CombinedSsids + "_" + Path.Combine(DownloadsPath, "perc01anData.csv");
-            File.WriteAllBytes(filepath, data);
-        }
+        
         public void RemoveSafeNodes()
         {
 
@@ -257,7 +251,7 @@ namespace XamarinForms.LocationService.Services
             }
             catch (Exception e)
             {
-                CombinedSsids = ">fault ON this BL rename<";
+                CombinedSsids.Add(">fault ON this BL rename<");
             }
             //}
         }
@@ -282,7 +276,7 @@ namespace XamarinForms.LocationService.Services
             }
             catch (Exception e)
             {
-                CombinedSsids = "GATT Advertisement error";
+                CombinedSsids.Add("GATT Advertisement error");
             }
         }
         public class MyAdvertiseCallback : AdvertiseCallback

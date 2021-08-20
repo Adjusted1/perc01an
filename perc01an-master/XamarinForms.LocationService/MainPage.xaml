@@ -57,7 +57,7 @@
                 Command="{Binding EndCommand}"
                 IsEnabled="{Binding StopEnabled}"/>
             <Button VerticalOptions="CenterAndExpand"
-                Text="not impl."
+                Text="Save Collected Addresses to Log"
                 Command="{Binding LoadLog}"
                 IsEnabled="True"/>
             
