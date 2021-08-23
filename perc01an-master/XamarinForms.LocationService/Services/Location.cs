@@ -116,13 +116,13 @@ namespace XamarinForms.LocationService.Services
                                     Longitude = location.Longitude,
                                     Ssid = location.Latitude.ToString() + "," + location.Longitude.ToString(),
                                     SsidNeighZero = (Math.Truncate(dist0 * 100) / 100).ToString() + "km",
-                                    SsidNeighOne = (Math.Truncate(dist1 * 100) / 100).ToString(),
-                                    SsidNeighTwo = (Math.Truncate(dist2 * 100) / 100).ToString(),
-                                    SsidNeighThree = (Math.Truncate(dist3 * 100) / 100).ToString(),
-                                    SsidNeighFour = (Math.Truncate(dist4 * 100) / 100).ToString(),
-                                    SsidNeighFive = (Math.Truncate(dist5 * 100) / 100).ToString(),
-                                    SsidNeighSix = (Math.Truncate(dist6 * 100) / 100).ToString(),
-                                    SsidNeighSeven = (Math.Truncate(dist7 * 100) / 100).ToString(),
+                                    SsidNeighOne = (Math.Truncate(dist1 * 100) / 100).ToString() + "km",
+                                    SsidNeighTwo = (Math.Truncate(dist2 * 100) / 100).ToString() + "km",
+                                    SsidNeighThree = (Math.Truncate(dist3 * 100) / 100).ToString() + "km",
+                                    SsidNeighFour = (Math.Truncate(dist4 * 100) / 100).ToString() + "km",
+                                    SsidNeighFive = (Math.Truncate(dist5 * 100) / 100).ToString() + "km",
+                                    SsidNeighSix = (Math.Truncate(dist6 * 100) / 100).ToString() + "km",
+                                    SsidNeighSeven = (Math.Truncate(dist7 * 100) / 100).ToString() + "km",
                                     Scanning = p2p.Scanning
                                 };
                                 Device.BeginInvokeOnMainThread(() =>
