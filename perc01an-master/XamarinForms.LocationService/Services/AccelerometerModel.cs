@@ -4,20 +4,27 @@ using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
 
-namespace XamarinForms.LocationService.Services
+namespace XamarinForms.LocationServiceEventConsumer.Services
 {
-    class AccelerometerModel : Location
+    class AccelerometerModel
     {
         SensorSpeed speed = SensorSpeed.UI;
         public static List<Tuple<float,float,float>> AccelData { get; set; }
         public static List<float> JerkHistory { get; set; }
         public static int i { get; set; } = 0;
+        public static float Sensitivity_Threshold { get; set; } = 10.0f;
 
         public AccelerometerModel()
         {
             // Register for reading changes, be sure to unsubscribe when finished
             Accelerometer.ReadingChanged += Accelerometer_ReadingChanged;
+            Accelerometer.ShakeDetected += Accelerometer_ShakeDetected;
             AccelData = new List<Tuple<float,float,float>>();
+        }
+
+        void Accelerometer_ShakeDetected(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         void Accelerometer_ReadingChanged(object sender, AccelerometerChangedEventArgs e)
@@ -32,9 +39,6 @@ namespace XamarinForms.LocationService.Services
                 var compz = (double)AccelData[i-1].Item3;
                 JerkHistory.Add((float)Math.Sqrt(compx * compx + compy * compy + compz * compz));
             }
-            var firstXvalue = AccelData[0].Item1;
-            var firstYvalue = AccelData[0].Item2;
-            var firstZvalue = AccelData[0].Item3;
         }
         public float ReturnJerk(float accel)
         {
