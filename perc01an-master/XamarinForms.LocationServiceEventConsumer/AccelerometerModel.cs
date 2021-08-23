@@ -17,7 +17,13 @@ namespace XamarinForms.LocationService.Services
         {
             // Register for reading changes, be sure to unsubscribe when finished
             Accelerometer.ReadingChanged += Accelerometer_ReadingChanged;
+            Accelerometer.ShakeDetected += Accelerometer_ShakeDetected;
             AccelData = new List<Tuple<float,float,float>>();
+        }
+
+        private void Accelerometer_ShakeDetected(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         void Accelerometer_ReadingChanged(object sender, AccelerometerChangedEventArgs e)
