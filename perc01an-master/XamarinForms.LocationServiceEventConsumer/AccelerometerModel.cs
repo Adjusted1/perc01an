@@ -4,9 +4,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
 
-namespace XamarinForms.LocationService.Services
+namespace XamarinForms.LocationServiceEventConsumer
 {
-    class AccelerometerModel : Location
+    class AccelerometerModel
     {
         SensorSpeed speed = SensorSpeed.UI;
         public static List<Tuple<float,float,float>> AccelData { get; set; }
@@ -15,15 +15,20 @@ namespace XamarinForms.LocationService.Services
 
         public AccelerometerModel()
         {
+
             // Register for reading changes, be sure to unsubscribe when finished
-            Accelerometer.ReadingChanged += Accelerometer_ReadingChanged;
+            //Accelerometer.ReadingChanged += Accelerometer_ReadingChanged;
             Accelerometer.ShakeDetected += Accelerometer_ShakeDetected;
+            //ToggleAccelerometer();
+            Accelerometer.Start(speed);
             AccelData = new List<Tuple<float,float,float>>();
+            
         }
 
         private void Accelerometer_ShakeDetected(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            // start perc01an
+            AccelData.Add(null);
         }
 
         void Accelerometer_ReadingChanged(object sender, AccelerometerChangedEventArgs e)
