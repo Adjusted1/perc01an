@@ -26,9 +26,10 @@ namespace XamarinForms.LocationService.Droid
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
 
             serviceIntent = new Intent(this, typeof(AndroidLocationService));
-            SetServiceMethods();
 
-            
+           
+
+            SetServiceMethods();
 
             if (Build.VERSION.SdkInt >= BuildVersionCodes.M && !Android.Provider.Settings.CanDrawOverlays(this))
             {
@@ -37,6 +38,7 @@ namespace XamarinForms.LocationService.Droid
                 this.StartActivity(intent);
             }
             
+
             LoadApplication(new App());
         }
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)

@@ -3,36 +3,39 @@ using System;
 using System.Collections.Generic;
 using Xamarin.Essentials;
 
-namespace XamarinForms.LocationServiceEventConsumer
+namespace XamarinForms.LocationService.Services
 {
-    class AccelerometerModel
+    public class AccelerometerModel
     {
         SensorSpeed speed = SensorSpeed.UI;
         public static List<Tuple<float,float,float>> AccelData { get; set; }
         public static List<float> JerkHistory { get; set; }
         public static int i { get; set; } = 0;
+        private static float jerkThreshold = 0.5f;
+        public bool active { get; set; } = false;
 
         public AccelerometerModel()
         {
 
             // Register for reading changes, be sure to unsubscribe when finished
-            //Accelerometer.ReadingChanged += Accelerometer_ReadingChanged;
+            Accelerometer.ReadingChanged += Accelerometer_ReadingChanged;
             Accelerometer.ShakeDetected += Accelerometer_ShakeDetected;
             //ToggleAccelerometer();
             Accelerometer.Start(speed);
             AccelData = new List<Tuple<float,float,float>>();
-            
+            JerkHistory = new List<float>();
+            AccelData.Add(Tuple.Create(0.0f, 0.0f, 0.0f));
         }
 
         private void Accelerometer_ShakeDetected(object sender, EventArgs e)
         {
             // start perc01an
-            AccelData.Add(null);
-            // Here filePath is the Path for the .apk
-            Android.Content.Intent intent = new Android.Content.Intent();
-            // pck name, fully qual class name:
-            intent.SetComponent(new ComponentName("perc01an.peer2peer.bluetooth.rescue", "XamarinForms.LocationService.Android"));
-            Android.App.Application.Context.StartActivity(intent);
+            //AccelData.Add(null);
+            //if(JerkHistory[i] > 0.5f)
+            //{
+            //    // start perc01ating
+            //    active = true; 
+            //}
 
         }
 
@@ -47,6 +50,10 @@ namespace XamarinForms.LocationServiceEventConsumer
                 var compy = (double)AccelData[i-1].Item2;
                 var compz = (double)AccelData[i-1].Item3;
                 JerkHistory.Add((float)Math.Sqrt(compx * compx + compy * compy + compz * compz));
+                if (JerkHistory[i-1] > 0.5f)
+                {
+                    active = false; 
+                }
             }
             var firstXvalue = AccelData[0].Item1;
             var firstYvalue = AccelData[0].Item2;

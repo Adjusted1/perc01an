@@ -53,6 +53,7 @@
                 Command="{Binding StartCommand}"
                 IsEnabled="{Binding StartEnabled}"/>
             <Button VerticalOptions="CenterAndExpand"
+                x:Name="stop"
                 Text="Stop"
                 Command="{Binding EndCommand}"
                 IsEnabled="{Binding StopEnabled}"/>

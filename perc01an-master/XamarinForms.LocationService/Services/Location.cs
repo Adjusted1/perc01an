@@ -9,7 +9,7 @@ using Google.Type;
 
 namespace XamarinForms.LocationService.Services
 {
-    public class Location
+    public class Location : ContentPage
     {
         public bool stopping = false;
         private p2p p2p = null;
@@ -60,6 +60,10 @@ namespace XamarinForms.LocationService.Services
         //public Location(bool suppress) { }       
         public async Task Run(CancellationToken token)
         {
+
+            XamarinForms.LocationService.Services.AccelerometerModel am = new LocationService.Services.AccelerometerModel();
+            
+            am.active = true;
             //
             // why I'm using await Task.Run(async ()
             // sometimes I/O-bound operations are blocking and they don't provide a fully asynchronous API; 
@@ -71,6 +75,7 @@ namespace XamarinForms.LocationService.Services
                 //p2p.lastSsid = "waiting for data";
                 while (!stopping)
                 {
+                    
                     if(stopping)
                     {
                          p2p.doneScanning = true;   
@@ -141,6 +146,24 @@ namespace XamarinForms.LocationService.Services
                         }
                         return;
                     }, token);
+                    if (!am.active)
+                    {
+                        
+                        stopping = true;
+                        var message = new LocationMessage
+                        {
+                            Ssid = "No Excessive Accelerations Detected"
+                        };
+                        Device.BeginInvokeOnMainThread(() =>
+                        {
+                            MessagingCenter.Send<LocationMessage>(message, "Location");                            
+                        });
+
+                    }
+#if DEBUG
+                    //am.active = !am.active;
+                    //stopping = !stopping;
+#endif
                 }
             }
         }
