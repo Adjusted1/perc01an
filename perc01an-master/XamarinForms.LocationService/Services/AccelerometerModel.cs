@@ -41,6 +41,12 @@ namespace XamarinForms.LocationService.Services
 
         void Accelerometer_ReadingChanged(object sender, AccelerometerChangedEventArgs e)
         {
+            /**
+             * 
+             * jerk values all 1 !!!
+             * 
+             * 
+             */
             i++;
             var data = e.Reading;
             AccelData.Add(Tuple.Create(data.Acceleration.X, data.Acceleration.Y,data.Acceleration.Z));
@@ -50,9 +56,9 @@ namespace XamarinForms.LocationService.Services
                 var compy = (double)AccelData[i-1].Item2;
                 var compz = (double)AccelData[i-1].Item3;
                 JerkHistory.Add((float)Math.Sqrt(compx * compx + compy * compy + compz * compz));
-                if (JerkHistory[i-1] > 0.5f)
+                if (JerkHistory[i-1] > 1.5f)
                 {
-                    active = false; 
+                    active = true; 
                 }
             }
             var firstXvalue = AccelData[0].Item1;
