@@ -107,6 +107,7 @@
     <Compile Include="BootBroadcastReceiver.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Archive.This.Project.To.Make.apk" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
     <None Include="Properties\AndroidManifest.xml" />
@@ -142,7 +143,7 @@
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties XamarinHotReloadDebuggerTimeoutExceptionXamarinFormsLocationServiceAndroidHideInfoBar="True" TriggeredFromHotReload="False" />
+      <UserProperties TriggeredFromHotReload="False" XamarinHotReloadDebuggerTimeoutExceptionXamarinFormsLocationServiceAndroidHideInfoBar="True" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>
