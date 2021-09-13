@@ -75,7 +75,7 @@ namespace XamarinForms.LocationService.Services
                 //p2p.lastSsid = "waiting for data";
                 while (!stopping)
                 {
-                    if (!am.active) { stopping = true; }
+                    //if (!am.active) { stopping = true; }
                     if(stopping)
                     {
                         p2p.doneScanning = true;

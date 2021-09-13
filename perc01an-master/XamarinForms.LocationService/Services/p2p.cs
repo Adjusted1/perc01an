@@ -52,13 +52,17 @@ namespace XamarinForms.LocationService.Services
         public object Lock;
         public static Random _random = new Random();
 
-        public static bool debugging = true;
+        public static bool debugging = false;
 
         Plugin.BLE.Abstractions.Contracts.IBluetoothLE current;
         Plugin.BLE.Abstractions.Contracts.IAdapter adapter;
 
         public p2p()
         {
+            for(int i = 0; i < 8; i++)
+            {
+                //deviceList.Add();
+            }
             CombinedSsids = new List<string>();
             Lock = new object();            
             current = CrossBluetoothLE.Current;
@@ -131,14 +135,21 @@ namespace XamarinForms.LocationService.Services
                     //adapter.StopScanningForDevicesAsync();
                     //adapter.ConnectToDeviceAsync(devices[recvdFrom]);
                     // was if on next line
-                    if (devices[recvdFrom].Name == null)
-                    {
+                    if ((devices.Count > 0) && (devices[recvdFrom].Name == null))
+                    {                      
                         adapter.ConnectToDeviceAsync(devices[recvdFrom]);
-
                     }
                     else
                     {
-                        lastSsid = devices[recvdFrom].Name;
+                        try
+                        {
+                            if (devices.Count >= recvdFrom + 1)
+                            {
+                                lastSsid = devices[recvdFrom].Name;
+                            }
+                        }
+                        catch(Exception e) { }
+                        
 
                         //Mapper.Update(recvdFrom, lastSsid);
 
