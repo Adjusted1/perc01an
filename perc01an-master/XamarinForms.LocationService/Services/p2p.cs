@@ -59,6 +59,7 @@ namespace XamarinForms.LocationService.Services
 
         public p2p()
         {
+            //debugging = true;
             for(int i = 0; i < 8; i++)
             {
                 //deviceList.Add();
@@ -75,6 +76,10 @@ namespace XamarinForms.LocationService.Services
                 {
                     deviceList.Add(a.Device);
                 }
+            };
+            adapter.DeviceConnected += (s, a) =>
+            {
+                lastSsid = deviceList[recvdFrom].Name;
             };
             Scanning = "|Scan:ON!";
             StartGATT("percNode");
@@ -135,20 +140,32 @@ namespace XamarinForms.LocationService.Services
                     //adapter.StopScanningForDevicesAsync();
                     //adapter.ConnectToDeviceAsync(devices[recvdFrom]);
                     // was if on next line
-                    if ((devices.Count > 0) && (devices[recvdFrom].Name == null))
-                    {                      
+                    if (devices.Count > 0)
+                    {
+
                         adapter.ConnectToDeviceAsync(devices[recvdFrom]);
+                        /*byte[] _bytes = devices[recvdFrom].Id.ToByteArray();
+                        int int_ = ((int)_bytes[10]) | ((int)_bytes[11] << 8) | ((int)_bytes[12] << 16) | ((int)_bytes[13] << 24);
+                        var lastSSIDLat = GetRandomNumber(-int_,int_);
+                        var lastSSIDLong = lastSSIDLat;
+                        lastSsid = lastSSIDLat + "," + lastSSIDLong;*/
+                        
+                        
                     }
                     else
                     {
-                        try
-                        {
-                            if (devices.Count >= recvdFrom + 1)
-                            {
-                                lastSsid = devices[recvdFrom].Name;
-                            }
-                        }
-                        catch(Exception e) { }
+                        //try
+                        //{
+                        //    if (devices.Count >= recvdFrom + 1)
+                        //    {
+                        //        if (devices[recvdFrom].State == Plugin.BLE.Abstractions.DeviceState.Connecting)
+                        //        {
+                        //            //lastSsid = devices[recvdFrom].Rssi.ToString();
+                        //        }
+                                
+                        //    }
+                        //}
+                        //catch(Exception e) { }
                         
 
                         //Mapper.Update(recvdFrom, lastSsid);

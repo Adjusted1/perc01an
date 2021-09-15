@@ -47,6 +47,7 @@ namespace XamarinForms.LocationService.Services
 
         private static Xamarin.Essentials.Location LocFomNeighStr(string neighStr)
         {
+            if (!neighStr.Contains(',')) { return new Xamarin.Essentials.Location(0, 0); }
             string[] lat_long = neighStr.Split(',');
             double lat = double.Parse(lat_long[0], System.Globalization.CultureInfo.InvariantCulture);
             double lon = double.Parse(lat_long[1], System.Globalization.CultureInfo.InvariantCulture);
