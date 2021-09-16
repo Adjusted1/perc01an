@@ -181,6 +181,7 @@ namespace XamarinForms.LocationService.Services
                     //stopping = !stopping;
 #endif
                 }
+                p2p.StopGATT();
             }
         }
     }
