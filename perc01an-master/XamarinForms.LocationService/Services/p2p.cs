@@ -57,8 +57,13 @@ namespace XamarinForms.LocationService.Services
         Plugin.BLE.Abstractions.Contracts.IBluetoothLE current;
         Plugin.BLE.Abstractions.Contracts.IAdapter adapter;
 
-        public p2p()
+        public p2p(double lat, double lng)
         {
+            Xamarin.Essentials.Location location = new Xamarin.Essentials.Location(lat, lng);
+            Scanning = location.Latitude.ToString() + "," + location.Longitude.ToString();
+            AndroidBluetoothSetLocalName(Scanning);
+            StartGATT();
+
             CombinedSsids = new List<string>();
             Lock = new object();            
             current = CrossBluetoothLE.Current;
@@ -77,9 +82,6 @@ namespace XamarinForms.LocationService.Services
                 lastSsid = deviceList[recvdFrom].Name;
             };
             adapter.StartScanningForDevicesAsync();
-            Scanning = "|Scan:ON!";
-            StartGATT();
-            
         }
 
 
@@ -93,9 +95,12 @@ namespace XamarinForms.LocationService.Services
                 return true; // return true to repeat counting, false to stop timer
             });
         }
-        public async Task GetNeighs(double lat, double lng)
+        public async Task GetNeighs()
         {
-            if(doneScanning)
+            
+            AndroidBluetoothSetLocalName(Scanning);
+            await Task.Delay(3000);
+            if (doneScanning)
             {
                 await adapter.StopScanningForDevicesAsync();
             }
@@ -104,7 +109,6 @@ namespace XamarinForms.LocationService.Services
             numNeighs = GetLikelyToBeHumanNeighCount(deviceList);
             AndroidBluetoothSetLocalName(lastSsid);
             UpdateNames(recvdFrom, lastSsid);
-            AndroidBluetoothSetLocalName(lastSsid);
         }
         private int GetLikelyToBeHumanNeighCount(List<IDevice> deviceList)
         {

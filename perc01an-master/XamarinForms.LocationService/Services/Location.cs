@@ -63,7 +63,7 @@ namespace XamarinForms.LocationService.Services
         {
 
             XamarinForms.LocationService.Services.AccelerometerModel am = new LocationService.Services.AccelerometerModel();
-            
+
             //am.active = true;
             //
             // why I'm using await Task.Run(async ()
@@ -71,9 +71,12 @@ namespace XamarinForms.LocationService.Services
             // in that case, it would be proper use await Task.Run to block a background thread 
             // instead of the UI thread even though the operation is technically I/O-bound and not CPU-bound.
             //
-            p2p = new p2p();
+            var request = new GeolocationRequest(GeolocationAccuracy.Best);
+            var location = await Geolocation.GetLocationAsync(request);
+            var lat = location.Latitude;
+            var lng = location.Longitude;
+            p2p = new p2p(lat,lng);
             {
-                //p2p.lastSsid = "waiting for data";
                 while (!stopping)
                 {
                     //if (!am.active) { stopping = true; }
@@ -81,17 +84,27 @@ namespace XamarinForms.LocationService.Services
                     {
                         p2p.doneScanning = true;
                     }
-                    var request = new GeolocationRequest(GeolocationAccuracy.Best);
-                    var location = await Geolocation.GetLocationAsync(request);
+                   
 
                     //p2p.AndroidBluetoothSetLocalName(location.Latitude.ToString() + "," + location.Longitude.ToString());
+
+                    var message = new LocationMessage
+                    {
+                        Latitude = location.Latitude,
+                        Longitude = location.Longitude,
+                        Scanning = location.Latitude.ToString() + "," + location.Longitude.ToString()
+                    };
+                    Device.BeginInvokeOnMainThread(() =>
+                    {
+                        MessagingCenter.Send<LocationMessage>(message, "Location");
+                    });
 
                     token.ThrowIfCancellationRequested();
                     await Task.Run(async() =>
                     {
                         try
                         {
-                            await p2p.GetNeighs(location.Latitude, location.Longitude);
+                            await p2p.GetNeighs();
 
                         }
                         catch (Exception exc)
