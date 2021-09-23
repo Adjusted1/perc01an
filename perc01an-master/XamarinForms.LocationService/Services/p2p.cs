@@ -97,9 +97,9 @@ namespace XamarinForms.LocationService.Services
         }
         public async Task GetNeighs()
         {
-            
+            StopGATT();
             AndroidBluetoothSetLocalName(Scanning);
-            await Task.Delay(3000);
+            //await Task.Delay(3000);
             if (doneScanning)
             {
                 await adapter.StopScanningForDevicesAsync();
@@ -107,8 +107,9 @@ namespace XamarinForms.LocationService.Services
             numNeighs = 0;
             await ConnectToNeighbors(deviceList, numNeighs, adapter);
             numNeighs = GetLikelyToBeHumanNeighCount(deviceList);
-            AndroidBluetoothSetLocalName(lastSsid);
+            //AndroidBluetoothSetLocalName(lastSsid);
             UpdateNames(recvdFrom, lastSsid);
+            StartGATT();
         }
         private int GetLikelyToBeHumanNeighCount(List<IDevice> deviceList)
         {
@@ -135,6 +136,7 @@ namespace XamarinForms.LocationService.Services
                     {
                         try
                         {
+
                             await adapter.ConnectToDeviceAsync(devices[recvdFrom]);
                         }
                         catch (DeviceConnectionException e)

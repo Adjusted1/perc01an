@@ -84,15 +84,31 @@ namespace XamarinForms.LocationService.Services
                     {
                         p2p.doneScanning = true;
                     }
-                   
 
+                    double dist0 = CalculateDistance(LocFomNeighStr(p2p.Ssidneighzero), location);
+                    double dist1 = CalculateDistance(LocFomNeighStr(p2p.Ssidneighone), location);
+                    double dist2 = CalculateDistance(LocFomNeighStr(p2p.Ssidneightwo), location);
+                    double dist3 = CalculateDistance(LocFomNeighStr(p2p.Ssidneighthree), location);
+                    double dist4 = CalculateDistance(LocFomNeighStr(p2p.Ssidneighfour), location);
+                    double dist5 = CalculateDistance(LocFomNeighStr(p2p.Ssidneighfive), location);
+                    double dist6 = CalculateDistance(LocFomNeighStr(p2p.Ssidneighsix), location);
+                    double dist7 = CalculateDistance(LocFomNeighStr(p2p.Ssidneighseven), location);
                     //p2p.AndroidBluetoothSetLocalName(location.Latitude.ToString() + "," + location.Longitude.ToString());
 
                     var message = new LocationMessage
                     {
                         Latitude = location.Latitude,
                         Longitude = location.Longitude,
-                        Scanning = location.Latitude.ToString() + "," + location.Longitude.ToString()
+                        Scanning = location.Latitude.ToString() + "," + location.Longitude.ToString(),
+                        Ssid = location.Latitude.ToString() + "," + location.Longitude.ToString() + " " + "No Excessive Accelerations Detected",
+                        SsidNeighZero = (Math.Truncate(dist0 * 100) / 100).ToString() + "km",
+                        SsidNeighOne = (Math.Truncate(dist1 * 100) / 100).ToString() + "km",
+                        SsidNeighTwo = (Math.Truncate(dist2 * 100) / 100).ToString() + "km",
+                        SsidNeighThree = (Math.Truncate(dist3 * 100) / 100).ToString() + "km",
+                        SsidNeighFour = (Math.Truncate(dist4 * 100) / 100).ToString() + "km",
+                        SsidNeighFive = (Math.Truncate(dist5 * 100) / 100).ToString() + "km",
+                        SsidNeighSix = (Math.Truncate(dist6 * 100) / 100).ToString() + "km",
+                        SsidNeighSeven = (Math.Truncate(dist7 * 100) / 100).ToString() + "km"
                     };
                     Device.BeginInvokeOnMainThread(() =>
                     {
