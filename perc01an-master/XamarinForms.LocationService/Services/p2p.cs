@@ -138,7 +138,7 @@ namespace XamarinForms.LocationService.Services
                         {
 
                             await adapter.ConnectToDeviceAsync(devices[recvdFrom]);
-                            lastSsid = devices[recvdFrom].Name + "-p2p-data-";
+                            lastSsid = "p2p." + devices[recvdFrom].Name;
                         }
                         catch (DeviceConnectionException e)
                         {
