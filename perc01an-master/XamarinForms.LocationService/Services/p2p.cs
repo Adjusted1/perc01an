@@ -62,7 +62,7 @@ namespace XamarinForms.LocationService.Services
             Xamarin.Essentials.Location location = new Xamarin.Essentials.Location(lat, lng);
             Scanning = location.Latitude.ToString() + "," + location.Longitude.ToString();
             AndroidBluetoothSetLocalName(Scanning);
-            StartGATT();
+            
 
             CombinedSsids = new List<string>();
             Lock = new object();            
@@ -81,7 +81,8 @@ namespace XamarinForms.LocationService.Services
             {
                 lastSsid = deviceList[recvdFrom].Name;
             };
-            adapter.StartScanningForDevicesAsync();
+            StartGATT();
+            
         }
 
 
@@ -97,19 +98,24 @@ namespace XamarinForms.LocationService.Services
         }
         public async Task GetNeighs()
         {
-            StopGATT();
-            AndroidBluetoothSetLocalName(Scanning);
+
+            deviceList.Clear();
+            await adapter.StartScanningForDevicesAsync();
             //await Task.Delay(3000);
             if (doneScanning)
             {
                 await adapter.StopScanningForDevicesAsync();
             }
-            numNeighs = 0;
-            await ConnectToNeighbors(deviceList, numNeighs, adapter);
             numNeighs = GetLikelyToBeHumanNeighCount(deviceList);
+            ConnectToNeighbors(deviceList, numNeighs, adapter);
+            
             //AndroidBluetoothSetLocalName(lastSsid);
+            
+            // stop gatt before new name
+            
             UpdateNames(recvdFrom, lastSsid);
-            StartGATT();
+            StopGATT();
+            AndroidBluetoothSetLocalName(lastSsid);
         }
         private int GetLikelyToBeHumanNeighCount(List<IDevice> deviceList)
         {
@@ -137,7 +143,7 @@ namespace XamarinForms.LocationService.Services
                         try
                         {
 
-                            await adapter.ConnectToDeviceAsync(devices[recvdFrom]);
+                            adapter.ConnectToDeviceAsync(devices[recvdFrom]);
                             lastSsid = "p2p." + devices[recvdFrom].Name;
                         }
                         catch (DeviceConnectionException e)
