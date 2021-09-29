@@ -75,6 +75,7 @@ namespace XamarinForms.LocationService.Services
                 if (!deviceList.Contains(a.Device))
                 {
                     deviceList.Add(a.Device);
+                    numNeighs = GetLikelyToBeHumanNeighCount(deviceList);
                 }
             };
             adapter.DeviceConnected += (s, a) =>
@@ -98,24 +99,18 @@ namespace XamarinForms.LocationService.Services
         }
         public async Task GetNeighs()
         {
-
-            deviceList.Clear();
-            await adapter.StartScanningForDevicesAsync();
-            //await Task.Delay(3000);
+            adapter.StartScanningForDevicesAsync();
             if (doneScanning)
             {
                 await adapter.StopScanningForDevicesAsync();
             }
-            numNeighs = GetLikelyToBeHumanNeighCount(deviceList);
-            ConnectToNeighbors(deviceList, numNeighs, adapter);
-            
-            //AndroidBluetoothSetLocalName(lastSsid);
-            
-            // stop gatt before new name
-            
-            UpdateNames(recvdFrom, lastSsid);
-            StopGATT();
-            AndroidBluetoothSetLocalName(lastSsid);
+
+            if (numNeighs > 0)
+            {
+                ConnectToNeighbors(deviceList, numNeighs, adapter);
+                UpdateNames(recvdFrom, lastSsid);
+                AndroidBluetoothSetLocalName(lastSsid);
+            }
         }
         private int GetLikelyToBeHumanNeighCount(List<IDevice> deviceList)
         {
@@ -141,14 +136,13 @@ namespace XamarinForms.LocationService.Services
                     if (devices.Count > 0)
                     {
                         try
-                        {
-
+                        {                            
                             adapter.ConnectToDeviceAsync(devices[recvdFrom]);
-                            lastSsid = "p2p." + devices[recvdFrom].Name;
                         }
                         catch (DeviceConnectionException e)
                         {
                             // ... could not connect to device
+                            //lastSsid = "0,0";
                         }
                     }
                     else
@@ -254,7 +248,7 @@ namespace XamarinForms.LocationService.Services
             }
             catch (Exception e)
             {
-                CombinedSsids.Add(">fault ON this BL rename<");
+                lastSsid = ">fault ON this BL rename<";
             }
         }
         BluetoothLeAdvertiser advertiser;
