@@ -109,7 +109,9 @@ namespace XamarinForms.LocationService.Services
             {
                 ConnectToNeighbors(deviceList, numNeighs, adapter);
                 UpdateNames(recvdFrom, lastSsid);
+                StopGATT();
                 AndroidBluetoothSetLocalName(lastSsid);
+                StartGATT();
             }
         }
         private int GetLikelyToBeHumanNeighCount(List<IDevice> deviceList)
