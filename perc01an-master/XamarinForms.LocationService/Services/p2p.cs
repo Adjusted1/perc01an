@@ -24,8 +24,6 @@ namespace XamarinForms.LocationService.Services
     {
         readonly NeighborMatrices NM = new NeighborMatrices();
 
-
-
         //public static Dictionary<string, CartesianVector> CartesianLocation= new Dictionary<string, CartesianVector>(); // string is BL hardware Addr
 
         public static List<Plugin.BLE.Abstractions.Contracts.IDevice> deviceList = new List<Plugin.BLE.Abstractions.Contracts.IDevice>();
@@ -61,7 +59,7 @@ namespace XamarinForms.LocationService.Services
         {
             Xamarin.Essentials.Location location = new Xamarin.Essentials.Location(lat, lng);
             Scanning = location.Latitude.ToString() + "," + location.Longitude.ToString();
-            AndroidBluetoothSetLocalName(Scanning);
+            //AndroidBluetoothSetLocalName(Scanning);
             
 
             CombinedSsids = new List<string>();
@@ -80,9 +78,12 @@ namespace XamarinForms.LocationService.Services
             };
             adapter.DeviceConnected += (s, a) =>
             {
+                adapter.StopScanningForDevicesAsync();
                 lastSsid = deviceList[recvdFrom].Name;
+                AndroidBluetoothSetLocalName(lastSsid);
+                adapter.StartScanningForDevicesAsync();
             };
-            StartGATT();
+            
             
         }
 
@@ -109,10 +110,17 @@ namespace XamarinForms.LocationService.Services
             {
                 ConnectToNeighbors(deviceList, numNeighs, adapter);
                 UpdateNames(recvdFrom, lastSsid);
-                StopGATT();
-                AndroidBluetoothSetLocalName(lastSsid);
-                StartGATT();
+                //StopGATT();
+                //AndroidBluetoothSetLocalName(lastSsid);
+                //StartGATT();
             }
+            else
+            {
+                lastSsid = "999,999";
+                UpdateNames(recvdFrom, lastSsid);
+                AndroidBluetoothSetLocalName(lastSsid);
+            }
+            StartGATT();
         }
         private int GetLikelyToBeHumanNeighCount(List<IDevice> deviceList)
         {
@@ -138,8 +146,9 @@ namespace XamarinForms.LocationService.Services
                     if (devices.Count > 0)
                     {
                         try
-                        {                            
-                            adapter.ConnectToDeviceAsync(devices[recvdFrom]);
+                        {
+                            
+                            await adapter.ConnectToDeviceAsync(devices[recvdFrom]);
                         }
                         catch (DeviceConnectionException e)
                         {
