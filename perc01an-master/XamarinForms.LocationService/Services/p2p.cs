@@ -20,7 +20,7 @@ using Plugin.BLE.Abstractions.Contracts;
 //long -180 to 180
 namespace XamarinForms.LocationService.Services
 {
-    class p2p : Location
+    class p2p
     {
         readonly NeighborMatrices NM = new NeighborMatrices();
 
@@ -66,7 +66,7 @@ namespace XamarinForms.LocationService.Services
             Lock = new object();            
             current = CrossBluetoothLE.Current;
             adapter = CrossBluetoothLE.Current.Adapter;
-            adapter.ScanTimeout = 1000;
+            adapter.ScanTimeout = 5000;
             adapter.DeviceDiscovered += (s, a) =>
             {
                 //adapter.StopScanningForDevicesAsync();
@@ -78,10 +78,10 @@ namespace XamarinForms.LocationService.Services
             };
             adapter.DeviceConnected += (s, a) =>
             {
-                adapter.StopScanningForDevicesAsync();
+                //adapter.StopScanningForDevicesAsync();
                 lastSsid = deviceList[recvdFrom].Name;
-                AndroidBluetoothSetLocalName(lastSsid);
-                adapter.StartScanningForDevicesAsync();
+                //AndroidBluetoothSetLocalName(lastSsid);
+                //adapter.StartScanningForDevicesAsync();
             };
             
             
@@ -98,13 +98,14 @@ namespace XamarinForms.LocationService.Services
                 return true; // return true to repeat counting, false to stop timer
             });
         }
-        public async Task GetNeighs()
+        public void GetNeighs()
         {
+            recvdFrom = _random.Next(0, 7);
             adapter.StartScanningForDevicesAsync();
-            if (doneScanning)
-            {
-                await adapter.StopScanningForDevicesAsync();
-            }
+            //if (doneScanning)
+            //{
+            //    adapter.StopScanningForDevicesAsync();
+            //}
 
             if (numNeighs > 0)
             {
@@ -118,7 +119,7 @@ namespace XamarinForms.LocationService.Services
             {
                 lastSsid = "999,999";
                 UpdateNames(recvdFrom, lastSsid);
-                AndroidBluetoothSetLocalName(lastSsid);
+                //AndroidBluetoothSetLocalName(lastSsid);
             }
             StartGATT();
         }
@@ -140,7 +141,7 @@ namespace XamarinForms.LocationService.Services
             if (!debugging)
             {
                 // run if not in debug mode
-                recvdFrom = _random.Next(0, 7);
+                
                 try
                 {
                     if (devices.Count > 0)
@@ -183,7 +184,7 @@ namespace XamarinForms.LocationService.Services
         }
         public void UpdateNames(int recvFrom, string lastSSID)
         {
-            CombinedSsids.Add(lastSSID + "|");
+            Scanning += lastSSID + "|";
             if (debugging)
             {
                 var lastSSIDLat = GetRandomNumber(-90, 90);

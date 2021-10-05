@@ -100,7 +100,7 @@ namespace XamarinForms.LocationService.Services
                     {
                         Latitude = location.Latitude,
                         Longitude = location.Longitude,
-                        Scanning = location.Latitude.ToString() + "," + location.Longitude.ToString(),
+                        Scanning = p2p.Scanning + location.Latitude.ToString() + "," + location.Longitude.ToString(),
                         Ssid = location.Latitude.ToString() + "," + location.Longitude.ToString(),
                         SsidNeighZero = (Math.Truncate(dist0 * 100) / 100).ToString() + "km",
                         SsidNeighOne = (Math.Truncate(dist1 * 100) / 100).ToString() + "km",
@@ -116,19 +116,19 @@ namespace XamarinForms.LocationService.Services
                         MessagingCenter.Send<LocationMessage>(message, "Location");
                     });
 
-                    
-                    await Task.Run(async() =>
-                    {
-                        try
-                        {
-                            await p2p.GetNeighs();
+                    p2p.GetNeighs();
+                    //await Task.Run(async() =>
+                    //{
+                    //    try
+                    //    {
+                    //        await p2p.GetNeighs();
 
-                        }
-                        catch (Exception exc)
-                        {
+                    //    }
+                    //    catch (Exception exc)
+                    //    {
 
-                        }
-                    }, token);
+                    //    }
+                    //}, token);
                     
                     await Task.Run(async () =>
                     {
