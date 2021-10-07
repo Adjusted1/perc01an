@@ -106,7 +106,7 @@ namespace XamarinForms.LocationService.Services
             }
             return i;
         }
-        private static void ConnectToNeighbors(List<Plugin.BLE.Abstractions.Contracts.IDevice> devices, int i,
+        private static async void ConnectToNeighbors(List<Plugin.BLE.Abstractions.Contracts.IDevice> devices, int i,
                                                Plugin.BLE.Abstractions.Contracts.IAdapter adapter)
         {
             recvdFrom = _random.Next(0, 7);
@@ -114,7 +114,7 @@ namespace XamarinForms.LocationService.Services
             {
                 if (devices[recvdFrom].Name == null)
                 {
-                    adapter.ConnectToDeviceAsync(devices[recvdFrom]);
+                    await adapter.ConnectToDeviceAsync(devices[recvdFrom]);
                     lastSsid = devices[recvdFrom].Name;
                 }
                 else
