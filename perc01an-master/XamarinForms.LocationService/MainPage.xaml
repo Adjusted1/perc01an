@@ -29,7 +29,7 @@
             />
                     <Label LineBreakMode="NoWrap"
             Grid.Row="1" Grid.Column="1" 
-            Text="{Binding IsBusy}"
+            Text="{Binding Ssid}"
             />  
                     <Label LineBreakMode="NoWrap"
             Grid.Row="1" Grid.Column="2" 

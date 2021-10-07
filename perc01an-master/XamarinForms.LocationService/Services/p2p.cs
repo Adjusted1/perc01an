@@ -23,33 +23,33 @@ namespace XamarinForms.LocationService.Services
     {
         readonly NeighborMatrices NM = new NeighborMatrices();
 
-
-
         //public static Dictionary<string, CartesianVector> CartesianLocation= new Dictionary<string, CartesianVector>(); // string is BL hardware Addr
 
         public static List<Plugin.BLE.Abstractions.Contracts.IDevice> deviceList = new List<Plugin.BLE.Abstractions.Contracts.IDevice>();
 
         private int numNeighs = 0;
-        public static string lastSsid = "";
+        public static string lastSsid = "0,0";
         public static string MyNewName = "";
-        public static string CombinedSsids = "";
+        public static List<string> CombinedSsids { get; set; }
         public static string filepath = "";
         public static bool doneScanning = false;
         public static int recvdFrom = 0;
         public static int nextNeigh = 0;
-        public static string Ssidneighzero = "";
-        public static string Ssidneighone = "";
-        public static string Ssidneightwo = "";
-        public static string Ssidneighthree = "";
-        public static string Ssidneighfour = "";
-        public static string Ssidneighfive = "";
-        public static string Ssidneighsix = "";
-        public static string Ssidneighseven = "";
+        public static string Ssidneighzero = "0,0";
+        public static string Ssidneighone = "0,0";
+        public static string Ssidneightwo = "0,0";
+        public static string Ssidneighthree = "0,0";
+        public static string Ssidneighfour = "0,0";
+        public static string Ssidneighfive = "0,0";
+        public static string Ssidneighsix = "0,0";
+        public static string Ssidneighseven = "0,0";
         public static string Scanning = "";
         public static bool ThisNameWasChanged = false;
         public static bool ReleaseHold = false;
         public object Lock;
         public static Random _random = new Random();
+
+        public static bool debugging = false;
 
         Plugin.BLE.Abstractions.Contracts.IBluetoothLE current;
         Plugin.BLE.Abstractions.Contracts.IAdapter adapter;
@@ -92,8 +92,8 @@ namespace XamarinForms.LocationService.Services
             //await adapter.StartScanningForDevicesAsync();
             ConnectToNeighbors(deviceList, numNeighs, adapter);
             numNeighs = GetLikelyToBeHumanNeighCount(deviceList);
-            CombinedSsids = numNeighs.ToString();
-            AndroidBluetoothSetLocalName(CombinedSsids);
+            //CombinedSsids = numNeighs.ToString();
+            //AndroidBluetoothSetLocalName(CombinedSsids);
             //if (ReleaseHold)
             //{
             UpdateNames(recvdFrom, lastSsid);
@@ -125,7 +125,7 @@ namespace XamarinForms.LocationService.Services
                 if (devices[recvdFrom].Name == null)
                 {
                     adapter.ConnectToDeviceAsync(devices[recvdFrom]);
-
+                    lastSsid = devices[recvdFrom].Name;
                 }
                 else
                 {
@@ -193,13 +193,13 @@ namespace XamarinForms.LocationService.Services
             }
 
         }
-        public void LogData()
-        {
-            byte[] data = Encoding.ASCII.GetBytes(CombinedSsids);
-            string DownloadsPath = Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, Android.OS.Environment.DirectoryDownloads);
-            filepath = CombinedSsids + "_" + Path.Combine(DownloadsPath, "perc01anData.csv");
-            File.WriteAllBytes(filepath, data);
-        }
+        //public void LogData()
+        //{
+        //    byte[] data = Encoding.ASCII.GetBytes(CombinedSsids);
+        //    string DownloadsPath = Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, Android.OS.Environment.DirectoryDownloads);
+        //    filepath = CombinedSsids + "_" + Path.Combine(DownloadsPath, "perc01anData.csv");
+        //    File.WriteAllBytes(filepath, data);
+        //}
         public void RemoveSafeNodes()
         {
 
@@ -231,7 +231,7 @@ namespace XamarinForms.LocationService.Services
             }
             catch (Exception e)
             {
-                CombinedSsids = ">fault ON this BL rename<";
+                CombinedSsids.Add(">fault ON this BL rename<");
             }
             //}
         }
@@ -256,7 +256,7 @@ namespace XamarinForms.LocationService.Services
             }
             catch (Exception e)
             {
-                CombinedSsids = "GATT Advertisement error";
+                CombinedSsids.Add("GATT Advertisement error");
             }
         }
         public class MyAdvertiseCallback : AdvertiseCallback

@@ -87,37 +87,18 @@ namespace XamarinForms.LocationService.Services
             var location = await Geolocation.GetLocationAsync(request);
             var lat = location.Latitude;
             var lng = location.Longitude;
+            
             p2p = new p2p();
             {
+                //p2p.lastSsid = "waiting for data";
                 while (!stopping)
                 {
-                    token.ThrowIfCancellationRequested();
+                    //var request = new GeolocationRequest(GeolocationAccuracy.Best);
+                    //var location = await Geolocation.GetLocationAsync(request);
 
-                    double dist0 = CalculateDistance(LocFomNeighStr(p2p.Ssidneighzero), location);
-                    double dist1 = CalculateDistance(LocFomNeighStr(p2p.Ssidneighone), location);
-                    double dist2 = CalculateDistance(LocFomNeighStr(p2p.Ssidneightwo), location);
-                    double dist3 = CalculateDistance(LocFomNeighStr(p2p.Ssidneighthree), location);
-                    double dist4 = CalculateDistance(LocFomNeighStr(p2p.Ssidneighfour), location);
-                    double dist5 = CalculateDistance(LocFomNeighStr(p2p.Ssidneighfive), location);
-                    double dist6 = CalculateDistance(LocFomNeighStr(p2p.Ssidneighsix), location);
-                    double dist7 = CalculateDistance(LocFomNeighStr(p2p.Ssidneighseven), location);
                     //p2p.AndroidBluetoothSetLocalName(location.Latitude.ToString() + "," + location.Longitude.ToString());
 
-                    var message = new LocationMessage
-                    {
-                        Latitude = location.Latitude,
-                        Longitude = location.Longitude,
-                        Scanning = p2p.Scanning + location.Latitude.ToString() + "," + location.Longitude.ToString(),
-                        Ssid = location.Latitude.ToString() + "," + location.Longitude.ToString(),
-                        SsidNeighZero = (Math.Truncate(dist0 * 100) / 100).ToString() + "km",
-                        SsidNeighOne = (Math.Truncate(dist1 * 100) / 100).ToString() + "km",
-                        SsidNeighTwo = (Math.Truncate(dist2 * 100) / 100).ToString() + "km",
-                        SsidNeighThree = (Math.Truncate(dist3 * 100) / 100).ToString() + "km",
-                        SsidNeighFour = (Math.Truncate(dist4 * 100) / 100).ToString() + "km",
-                        SsidNeighFive = (Math.Truncate(dist5 * 100) / 100).ToString() + "km",
-                        SsidNeighSix = (Math.Truncate(dist6 * 100) / 100).ToString() + "km",
-                        SsidNeighSeven = (Math.Truncate(dist7 * 100) / 100).ToString() + "km"
-                    };
+                    //token.ThrowIfCancellationRequested();
                     await Task.Run(async () =>
                     {
                         try
@@ -130,41 +111,57 @@ namespace XamarinForms.LocationService.Services
 
                         }
                     }, token);
-                    //Device.BeginInvokeOnMainThread(async () =>
-                    //{
-                    //    MessagingCenter.Send<LocationMessage>(message, "Location");
-                    //    await Task.Run(async () =>
-                    //    {
-                    //        try
-                    //        {
-                    //            await p2p.GetNeighs();
+                    await Task.Run(async () =>
+                    {
+                        try
+                        {
 
-                    //        }
-                    //        catch (Exception exc)
-                    //        {
-
-                    //        }
-                    //    }, token);
-                    //});
-                    //await Task.Run(async () =>
-                    //{
-                    //    try
-                    //    {
-                    //        p2p.GetNeighs();
-
-                    //    }
-                    //    catch (Exception exc)
-                    //    {
-
-                    //    }
-                    //}, token);
-
-
-
-
+                            if (location != null)
+                            {
+                                double testDistance = CalculateDistance(location, location);
+                                double dist0 = CalculateDistance(LocFomNeighStr(p2p.Ssidneighzero), location);
+                                double dist1 = CalculateDistance(LocFomNeighStr(p2p.Ssidneighone), location);
+                                double dist2 = CalculateDistance(LocFomNeighStr(p2p.Ssidneightwo), location);
+                                double dist3 = CalculateDistance(LocFomNeighStr(p2p.Ssidneighthree), location);
+                                double dist4 = CalculateDistance(LocFomNeighStr(p2p.Ssidneighfour), location);
+                                double dist5 = CalculateDistance(LocFomNeighStr(p2p.Ssidneighfive), location);
+                                double dist6 = CalculateDistance(LocFomNeighStr(p2p.Ssidneighsix), location);
+                                double dist7 = CalculateDistance(LocFomNeighStr(p2p.Ssidneighseven), location);
+                                var message = new LocationMessage
+                                {
+                                    Latitude = location.Latitude,
+                                    Longitude = location.Longitude,
+                                    Ssid = location.Latitude.ToString() + "," + location.Longitude.ToString(),
+                                    SsidNeighZero = p2p.Ssidneighzero,
+                                    SsidNeighOne = p2p.Ssidneighone,
+                                    SsidNeighTwo = p2p.Ssidneightwo,
+                                    SsidNeighThree = p2p.Ssidneighthree,
+                                    SsidNeighFour = p2p.Ssidneighfour,
+                                    SsidNeighFive = p2p.Ssidneighfive,
+                                    SsidNeighSix = p2p.Ssidneighsix,
+                                    SsidNeighSeven = p2p.Ssidneighseven,
+                                    Scanning = p2p.Scanning
+                                };
+                                Device.BeginInvokeOnMainThread(() =>
+                                {
+                                    MessagingCenter.Send<LocationMessage>(message, "Location");
+                                });
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Device.BeginInvokeOnMainThread(() =>
+                            {
+                                var errormessage = new LocationErrorMessage();
+                                MessagingCenter.Send<LocationErrorMessage>(errormessage, "LocationError" + " " + ex.ToString());
+                            });
+                        }
+                        return;
+                    }, token);
                 }
             }
         }
-
     }
+
+    
 }

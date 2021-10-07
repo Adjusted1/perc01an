@@ -328,40 +328,40 @@ namespace XamarinForms.LocationService.ViewModels
 
         public void OnLoadLog()
         {
-            LogData();
+            //LogData();
         }
-        public void LogData()
-        {
+        //public void LogData()
+        //{
 
-            string DownloadsPath = Path.Combine(FileSystem.AppDataDirectory, "temp.txt");
-            //Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, Android.OS.Environment.DirectoryDownloads);
-            p2p.filepath = Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, Android.OS.Environment.DirectoryDownloads);  
-            //p2p.CombinedSsids + "_" + Path.Combine(DownloadsPath, "perc01anData.csv");
-            foreach (string s in p2p.CombinedSsids)
-            {
-                var tmpStr = s;
-                char[] charArr = tmpStr.ToCharArray();
-                byte[] data = Encoding.ASCII.GetBytes(charArr);
-                try
-                {
-                    File.WriteAllBytes(p2p.filepath, data);
-                }
-                catch(Exception exc)
-                {
-                    var message = new LocationMessage
-                    {
-                        Ssid = "Error Saving GPS data"
-                    };
-                    Xamarin.Forms.Device.BeginInvokeOnMainThread(() =>
-                    {
-                        MessagingCenter.Send<LocationMessage>(message, "Location");
-                    });
+        //    string DownloadsPath = Path.Combine(FileSystem.AppDataDirectory, "temp.txt");
+        //    //Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, Android.OS.Environment.DirectoryDownloads);
+        //    p2p.filepath = Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, Android.OS.Environment.DirectoryDownloads);  
+        //    //p2p.CombinedSsids + "_" + Path.Combine(DownloadsPath, "perc01anData.csv");
+        //    foreach (string s in p2p.CombinedSsids)
+        //    {
+        //        var tmpStr = s;
+        //        char[] charArr = tmpStr.ToCharArray();
+        //        byte[] data = Encoding.ASCII.GetBytes(charArr);
+        //        try
+        //        {
+        //            File.WriteAllBytes(p2p.filepath, data);
+        //        }
+        //        catch(Exception exc)
+        //        {
+        //            var message = new LocationMessage
+        //            {
+        //                Ssid = "Error Saving GPS data"
+        //            };
+        //            Xamarin.Forms.Device.BeginInvokeOnMainThread(() =>
+        //            {
+        //                MessagingCenter.Send<LocationMessage>(message, "Location");
+        //            });
 
-                }
-            }
+        //        }
+        //    }
 
 
-        }
+        //}
         public void OnStartClick()
         {
             Start();
