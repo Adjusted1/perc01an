@@ -6,13 +6,23 @@ using Xamarin.Forms;
 using XamarinForms.LocationService.Messages;
 using Android.Bluetooth;
 using Google.Type;
+using Plugin.BLE;
+using Plugin.BLE.Abstractions.EventArgs;
+using Android.OS;
+using Android.Runtime;
+using Plugin.BLE.Abstractions.Exceptions;
+using Plugin.BLE.Abstractions.Contracts;
+using System.Collections.ObjectModel;
 
 namespace XamarinForms.LocationService.Services
 {
     public class Location : ContentPage
     {
+
         public bool stopping = false;
         private p2p p2p = null;
+
+       
         private static double DegreesToRadians(double degrees)
         {
             return degrees * Math.PI / 180.0;
@@ -51,7 +61,7 @@ namespace XamarinForms.LocationService.Services
             string[] lat_long = neighStr.Split(',');
             double lat = double.Parse(lat_long[0], System.Globalization.CultureInfo.InvariantCulture);
             double lon = double.Parse(lat_long[1], System.Globalization.CultureInfo.InvariantCulture);
-            Xamarin.Essentials.Location L = new Xamarin.Essentials.Location(lat,lon);// = new Location(lat_long[0] + lat_long[1]);
+            Xamarin.Essentials.Location L = new Xamarin.Essentials.Location(lat,lon);
             return L;            
         }
         
@@ -59,6 +69,8 @@ namespace XamarinForms.LocationService.Services
         {
         }
         //public Location(bool suppress) { }       
+        //  I use the Connect method at a higher level of abstraction in a loop with a cancellation token until
+        //  I get ConnectSucceed and am pretty quickly successful, although not always the first time
         public async Task Run(CancellationToken token)
         {
 
@@ -75,16 +87,11 @@ namespace XamarinForms.LocationService.Services
             var location = await Geolocation.GetLocationAsync(request);
             var lat = location.Latitude;
             var lng = location.Longitude;
-            p2p = new p2p(lat,lng);
+            p2p = new p2p();
             {
                 while (!stopping)
                 {
                     token.ThrowIfCancellationRequested();
-                    //if (!am.active) { stopping = true; }
-                    if (stopping)
-                    {
-                        p2p.doneScanning = true;
-                    }
 
                     double dist0 = CalculateDistance(LocFomNeighStr(p2p.Ssidneighzero), location);
                     double dist1 = CalculateDistance(LocFomNeighStr(p2p.Ssidneighone), location);
@@ -111,17 +118,39 @@ namespace XamarinForms.LocationService.Services
                         SsidNeighSix = (Math.Truncate(dist6 * 100) / 100).ToString() + "km",
                         SsidNeighSeven = (Math.Truncate(dist7 * 100) / 100).ToString() + "km"
                     };
-                    Device.BeginInvokeOnMainThread(() =>
+                    await Task.Run(async () =>
                     {
-                        MessagingCenter.Send<LocationMessage>(message, "Location");
-                    });
+                        try
+                        {
+                            await p2p.GetNeighs();
 
-                    p2p.GetNeighs();
-                    //await Task.Run(async() =>
+                        }
+                        catch (Exception exc)
+                        {
+
+                        }
+                    }, token);
+                    //Device.BeginInvokeOnMainThread(async () =>
+                    //{
+                    //    MessagingCenter.Send<LocationMessage>(message, "Location");
+                    //    await Task.Run(async () =>
+                    //    {
+                    //        try
+                    //        {
+                    //            await p2p.GetNeighs();
+
+                    //        }
+                    //        catch (Exception exc)
+                    //        {
+
+                    //        }
+                    //    }, token);
+                    //});
+                    //await Task.Run(async () =>
                     //{
                     //    try
                     //    {
-                    //        await p2p.GetNeighs();
+                    //        p2p.GetNeighs();
 
                     //    }
                     //    catch (Exception exc)
@@ -129,68 +158,13 @@ namespace XamarinForms.LocationService.Services
 
                     //    }
                     //}, token);
-                    
-                    await Task.Run(async () =>
-                    {
-                        try
-                        {
-                            
-                            if (location != null)
-                            {
-                                // always same value w/diff gps wtf
-                                double dist0 = CalculateDistance(LocFomNeighStr(p2p.Ssidneighzero), location);
-                                double dist1 = CalculateDistance(LocFomNeighStr(p2p.Ssidneighone), location);
-                                double dist2 = CalculateDistance(LocFomNeighStr(p2p.Ssidneightwo), location);
-                                double dist3 = CalculateDistance(LocFomNeighStr(p2p.Ssidneighthree), location);
-                                double dist4 = CalculateDistance(LocFomNeighStr(p2p.Ssidneighfour), location);
-                                double dist5 = CalculateDistance(LocFomNeighStr(p2p.Ssidneighfive), location);
-                                double dist6 = CalculateDistance(LocFomNeighStr(p2p.Ssidneighsix), location);
-                                double dist7 = CalculateDistance(LocFomNeighStr(p2p.Ssidneighseven), location);
-                               
-                                /*if (!am.active)
-                                {
-                                    var message = new LocationMessage
-                                    {
-                                        Latitude = location.Latitude,
-                                        Longitude = location.Longitude,
-                                        Ssid = location.Latitude.ToString() + "," + location.Longitude.ToString() + " " + "No Excessive Accelerations Detected",
-                                        SsidNeighZero = (Math.Truncate(dist0 * 100) / 100).ToString() + "km",
-                                        SsidNeighOne = (Math.Truncate(dist1 * 100) / 100).ToString() + "km",
-                                        SsidNeighTwo = (Math.Truncate(dist2 * 100) / 100).ToString() + "km",
-                                        SsidNeighThree = (Math.Truncate(dist3 * 100) / 100).ToString() + "km",
-                                        SsidNeighFour = (Math.Truncate(dist4 * 100) / 100).ToString() + "km",
-                                        SsidNeighFive = (Math.Truncate(dist5 * 100) / 100).ToString() + "km",
-                                        SsidNeighSix = (Math.Truncate(dist6 * 100) / 100).ToString() + "km",
-                                        SsidNeighSeven = (Math.Truncate(dist7 * 100) / 100).ToString() + "km",
-                                        Scanning = p2p.Scanning
-                                    };
-                                    Device.BeginInvokeOnMainThread(() =>
-                                    {
-                                        MessagingCenter.Send<LocationMessage>(message, "Location");
-                                    });
-                                }*/
-                                
 
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            Device.BeginInvokeOnMainThread(() =>
-                            {
-                                var errormessage = new LocationErrorMessage();
-                                MessagingCenter.Send<LocationErrorMessage>(errormessage, "LocationError" + " " + ex.ToString());
-                            });
-                        }
-                        return;
-                    }, token);
-                   
-#if DEBUG
-                    //am.active = !am.active;
-                    //stopping = !stopping;
-#endif
+
+
+
                 }
-                //p2p.StopGATT();
             }
         }
+
     }
 }

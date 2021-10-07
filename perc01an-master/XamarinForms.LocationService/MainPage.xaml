@@ -29,8 +29,8 @@
             />
                     <Label LineBreakMode="NoWrap"
             Grid.Row="1" Grid.Column="1" 
-            Text="{Binding Scanning}"
-            />
+            Text="{Binding IsBusy}"
+            />  
                     <Label LineBreakMode="NoWrap"
             Grid.Row="1" Grid.Column="2" 
             Text="{Binding SsidNeighFour}"
@@ -68,7 +68,7 @@
                     <FormattedString>
                         <FormattedString.Spans>
                             <Span Text=""/>
-                            <Span Text="{Binding Ssid}"/>
+                            <Span Text="{Binding Scanning}"/>
                         </FormattedString.Spans>
                     </FormattedString>
                 </Label.FormattedText>

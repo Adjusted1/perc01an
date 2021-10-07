@@ -16,75 +16,62 @@ using Android.OS;
 using Android.Runtime;
 using Plugin.BLE.Abstractions.Exceptions;
 using Plugin.BLE.Abstractions.Contracts;
-//lat -90 to 90
-//long -180 to 180
+
 namespace XamarinForms.LocationService.Services
 {
-    class p2p
+    class p2p : Location
     {
         readonly NeighborMatrices NM = new NeighborMatrices();
+
+
 
         //public static Dictionary<string, CartesianVector> CartesianLocation= new Dictionary<string, CartesianVector>(); // string is BL hardware Addr
 
         public static List<Plugin.BLE.Abstractions.Contracts.IDevice> deviceList = new List<Plugin.BLE.Abstractions.Contracts.IDevice>();
 
         private int numNeighs = 0;
-        public static string lastSsid = "0,0";
+        public static string lastSsid = "";
         public static string MyNewName = "";
-        public static List<string> CombinedSsids { get; set; }
+        public static string CombinedSsids = "";
         public static string filepath = "";
         public static bool doneScanning = false;
         public static int recvdFrom = 0;
         public static int nextNeigh = 0;
-        public static string Ssidneighzero = "0,0";
-        public static string Ssidneighone = "0,0";
-        public static string Ssidneightwo = "0,0";
-        public static string Ssidneighthree = "0,0";
-        public static string Ssidneighfour = "0,0";
-        public static string Ssidneighfive = "0,0";
-        public static string Ssidneighsix = "0,0";
-        public static string Ssidneighseven = "0,0";
+        public static string Ssidneighzero = "";
+        public static string Ssidneighone = "";
+        public static string Ssidneightwo = "";
+        public static string Ssidneighthree = "";
+        public static string Ssidneighfour = "";
+        public static string Ssidneighfive = "";
+        public static string Ssidneighsix = "";
+        public static string Ssidneighseven = "";
         public static string Scanning = "";
         public static bool ThisNameWasChanged = false;
         public static bool ReleaseHold = false;
         public object Lock;
         public static Random _random = new Random();
 
-        public static bool debugging = false;
-
         Plugin.BLE.Abstractions.Contracts.IBluetoothLE current;
         Plugin.BLE.Abstractions.Contracts.IAdapter adapter;
 
-        public p2p(double lat, double lng)
+        public p2p()
         {
-            Xamarin.Essentials.Location location = new Xamarin.Essentials.Location(lat, lng);
-            Scanning = location.Latitude.ToString() + "," + location.Longitude.ToString();
-            //AndroidBluetoothSetLocalName(Scanning);
-            
-
-            CombinedSsids = new List<string>();
-            Lock = new object();            
+            Lock = new object();
+            StartTimer(3000);
             current = CrossBluetoothLE.Current;
             adapter = CrossBluetoothLE.Current.Adapter;
-            adapter.ScanTimeout = 5000;
+            adapter.ScanTimeout = 1000;
             adapter.DeviceDiscovered += (s, a) =>
             {
                 //adapter.StopScanningForDevicesAsync();
                 if (!deviceList.Contains(a.Device))
                 {
                     deviceList.Add(a.Device);
-                    numNeighs = GetLikelyToBeHumanNeighCount(deviceList);
                 }
             };
-            adapter.DeviceConnected += (s, a) =>
-            {
-                //adapter.StopScanningForDevicesAsync();
-                lastSsid = deviceList[recvdFrom].Name;
-                //AndroidBluetoothSetLocalName(lastSsid);
-                //adapter.StartScanningForDevicesAsync();
-            };
-            
-            
+            Scanning = "|Scan:ON!";
+            StartGATT("percNode");
+            adapter.StartScanningForDevicesAsync();
         }
 
 
@@ -98,30 +85,21 @@ namespace XamarinForms.LocationService.Services
                 return true; // return true to repeat counting, false to stop timer
             });
         }
-        public void GetNeighs()
+        public async Task GetNeighs()
         {
-            recvdFrom = _random.Next(0, 7);
-            adapter.StartScanningForDevicesAsync();
-            //if (doneScanning)
+            numNeighs = 0;
+            //deviceList.Clear();
+            //await adapter.StartScanningForDevicesAsync();
+            ConnectToNeighbors(deviceList, numNeighs, adapter);
+            numNeighs = GetLikelyToBeHumanNeighCount(deviceList);
+            CombinedSsids = numNeighs.ToString();
+            AndroidBluetoothSetLocalName(CombinedSsids);
+            //if (ReleaseHold)
             //{
-            //    adapter.StopScanningForDevicesAsync();
+            UpdateNames(recvdFrom, lastSsid);
+            StopGATT();
+            AndroidBluetoothSetLocalName("hello-----" + lastSsid);
             //}
-
-            if (numNeighs > 0)
-            {
-                ConnectToNeighbors(deviceList, numNeighs, adapter);
-                UpdateNames(recvdFrom, lastSsid);
-                //StopGATT();
-                //AndroidBluetoothSetLocalName(lastSsid);
-                //StartGATT();
-            }
-            else
-            {
-                lastSsid = "999,999";
-                UpdateNames(recvdFrom, lastSsid);
-                //AndroidBluetoothSetLocalName(lastSsid);
-            }
-            StartGATT();
         }
         private int GetLikelyToBeHumanNeighCount(List<IDevice> deviceList)
         {
@@ -135,63 +113,46 @@ namespace XamarinForms.LocationService.Services
             }
             return i;
         }
-        private static async Task ConnectToNeighbors(List<Plugin.BLE.Abstractions.Contracts.IDevice> devices, int i,
+        private static void ConnectToNeighbors(List<Plugin.BLE.Abstractions.Contracts.IDevice> devices, int i,
                                                Plugin.BLE.Abstractions.Contracts.IAdapter adapter)
         {
-            if (!debugging)
+            recvdFrom = _random.Next(0, 7);
+            try
             {
-                // run if not in debug mode
-                
-                try
+                //adapter.StopScanningForDevicesAsync();
+                //adapter.ConnectToDeviceAsync(devices[recvdFrom]);
+                // was if on next line
+                if (devices[recvdFrom].Name == null)
                 {
-                    if (devices.Count > 0)
-                    {
-                        try
-                        {
-                            
-                            await adapter.ConnectToDeviceAsync(devices[recvdFrom]);
-                        }
-                        catch (DeviceConnectionException e)
-                        {
-                            // ... could not connect to device
-                            //lastSsid = "0,0";
-                        }
-                    }
-                    else
-                    {
-                        
-                    }
-                }
-                catch (DeviceConnectionException e)
-                {
+                    adapter.ConnectToDeviceAsync(devices[recvdFrom]);
 
+                }
+                else
+                {
+                    lastSsid = devices[recvdFrom].Name;
+
+                    //Mapper.Update(recvdFrom, lastSsid);
+
+                    // exception here
+                    //Mapper.Show(lastSsid, recvdFrom);
+                    // end exception
+
+                    //CartesianLocation.Add(devices[recvdFrom].Id.ToString(), cv = new CartesianVector(lat, lng));
                 }
             }
+            catch (DeviceConnectionException e)
+            {
 
-
+            }
 
         }
         private static void GetPeerNames()
         {
 
         }
-        public static int GetRandomNumber(int min, int max)
-        {
-             lock(_random) // synchronize
-             {
-                 return _random.Next(min, max);
-             }
-        }
         public void UpdateNames(int recvFrom, string lastSSID)
         {
-            Scanning += lastSSID + "|";
-            if (debugging)
-            {
-                var lastSSIDLat = GetRandomNumber(-90, 90);
-                var lastSSIDLong = GetRandomNumber(-180, 180);
-                lastSSID = lastSSIDLat + "," + lastSSIDLong;
-                recvdFrom = GetRandomNumber(0, 7);
-            }
+
             try
             {
                 if (recvFrom == 0)
@@ -232,7 +193,13 @@ namespace XamarinForms.LocationService.Services
             }
 
         }
-        
+        public void LogData()
+        {
+            byte[] data = Encoding.ASCII.GetBytes(CombinedSsids);
+            string DownloadsPath = Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, Android.OS.Environment.DirectoryDownloads);
+            filepath = CombinedSsids + "_" + Path.Combine(DownloadsPath, "perc01anData.csv");
+            File.WriteAllBytes(filepath, data);
+        }
         public void RemoveSafeNodes()
         {
 
@@ -251,20 +218,25 @@ namespace XamarinForms.LocationService.Services
         }
         public void AndroidBluetoothSetLocalName(string thisNewBLE_Name)
         {
+            //if (!ThisNameWasChanged)
+            //{
             try
             {
                 if (thisNewBLE_Name.Length > 0)
                 {
                     BluetoothAdapter.DefaultAdapter.SetName(thisNewBLE_Name);
+                    //ThisNameWasChanged = true;
+
                 }
             }
             catch (Exception e)
             {
-                lastSsid = ">fault ON this BL rename<";
+                CombinedSsids = ">fault ON this BL rename<";
             }
+            //}
         }
         BluetoothLeAdvertiser advertiser;
-        private void StartGATT()
+        private void StartGATT(string newName)
         {
             try
             {
@@ -284,7 +256,7 @@ namespace XamarinForms.LocationService.Services
             }
             catch (Exception e)
             {
-                CombinedSsids.Add("GATT Advertisement error");
+                CombinedSsids = "GATT Advertisement error";
             }
         }
         public class MyAdvertiseCallback : AdvertiseCallback
@@ -299,7 +271,7 @@ namespace XamarinForms.LocationService.Services
                 base.OnStartSuccess(settingsInEffect);
             }
         }
-        public void StopGATT()
+        private void StopGATT()
         {
             try
             {
@@ -310,7 +282,6 @@ namespace XamarinForms.LocationService.Services
         }
     }
 
- }
-    
-    
+}
+
 
