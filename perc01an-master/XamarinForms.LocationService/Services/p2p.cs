@@ -88,18 +88,11 @@ namespace XamarinForms.LocationService.Services
         public async Task GetNeighs()
         {
             numNeighs = 0;
-            //deviceList.Clear();
-            //await adapter.StartScanningForDevicesAsync();
             ConnectToNeighbors(deviceList, numNeighs, adapter);
             numNeighs = GetLikelyToBeHumanNeighCount(deviceList);
-            //CombinedSsids = numNeighs.ToString();
-            //AndroidBluetoothSetLocalName(CombinedSsids);
-            //if (ReleaseHold)
-            //{
             UpdateNames(recvdFrom, lastSsid);
             StopGATT();
             AndroidBluetoothSetLocalName("hello-----" + lastSsid);
-            //}
         }
         private int GetLikelyToBeHumanNeighCount(List<IDevice> deviceList)
         {
@@ -119,9 +112,6 @@ namespace XamarinForms.LocationService.Services
             recvdFrom = _random.Next(0, 7);
             try
             {
-                //adapter.StopScanningForDevicesAsync();
-                //adapter.ConnectToDeviceAsync(devices[recvdFrom]);
-                // was if on next line
                 if (devices[recvdFrom].Name == null)
                 {
                     adapter.ConnectToDeviceAsync(devices[recvdFrom]);
@@ -130,14 +120,6 @@ namespace XamarinForms.LocationService.Services
                 else
                 {
                     lastSsid = devices[recvdFrom].Name;
-
-                    //Mapper.Update(recvdFrom, lastSsid);
-
-                    // exception here
-                    //Mapper.Show(lastSsid, recvdFrom);
-                    // end exception
-
-                    //CartesianLocation.Add(devices[recvdFrom].Id.ToString(), cv = new CartesianVector(lat, lng));
                 }
             }
             catch (DeviceConnectionException e)
@@ -218,8 +200,6 @@ namespace XamarinForms.LocationService.Services
         }
         public void AndroidBluetoothSetLocalName(string thisNewBLE_Name)
         {
-            //if (!ThisNameWasChanged)
-            //{
             try
             {
                 if (thisNewBLE_Name.Length > 0)
@@ -233,7 +213,6 @@ namespace XamarinForms.LocationService.Services
             {
                 CombinedSsids.Add(">fault ON this BL rename<");
             }
-            //}
         }
         BluetoothLeAdvertiser advertiser;
         private void StartGATT(string newName)

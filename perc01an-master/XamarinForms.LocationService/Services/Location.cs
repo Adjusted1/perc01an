@@ -68,9 +68,6 @@ namespace XamarinForms.LocationService.Services
         public Location()
         {
         }
-        //public Location(bool suppress) { }       
-        //  I use the Connect method at a higher level of abstraction in a loop with a cancellation token until
-        //  I get ConnectSucceed and am pretty quickly successful, although not always the first time
         public async Task Run(CancellationToken token)
         {
 
@@ -90,15 +87,8 @@ namespace XamarinForms.LocationService.Services
             
             p2p = new p2p();
             {
-                //p2p.lastSsid = "waiting for data";
                 while (!stopping)
                 {
-                    //var request = new GeolocationRequest(GeolocationAccuracy.Best);
-                    //var location = await Geolocation.GetLocationAsync(request);
-
-                    //p2p.AndroidBluetoothSetLocalName(location.Latitude.ToString() + "," + location.Longitude.ToString());
-
-                    //token.ThrowIfCancellationRequested();
                     await Task.Run(async () =>
                     {
                         try
