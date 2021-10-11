@@ -71,6 +71,7 @@ namespace XamarinForms.LocationService.Services
         }
         public Location()
         {
+           
         }
         public async Task Run(CancellationToken token)
         {
@@ -88,6 +89,8 @@ namespace XamarinForms.LocationService.Services
             var location = await Geolocation.GetLocationAsync(request);
             var lat = location.Latitude;
             var lng = location.Longitude;
+            
+            
             
             p2p = new p2p();
             {

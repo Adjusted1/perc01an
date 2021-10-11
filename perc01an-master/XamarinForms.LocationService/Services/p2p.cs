@@ -14,20 +14,26 @@ using Plugin.BLE;
 using Plugin.BLE.Abstractions.EventArgs;
 using Android.OS;
 using Android.Runtime;
-//using Plugin.BLE.Abstractions.Exceptions;
-//using Plugin.BLE.Abstractions.Contracts;
+using Plugin.BLE.Abstractions.Exceptions;
+using Plugin.BLE.Abstractions.Contracts;
 using Android.Widget;
 using Android.Content;
+using Plugin.BLE.Abstractions;
+using System.Collections.ObjectModel;
+using Plugin.BLE.Abstractions.Extensions;
+using Quick.Xamarin.BLE.Abstractions;
+using Quick.Xamarin.BLE;
 
 namespace XamarinForms.LocationService.Services
 {
-    class p2p : Location
+    class p2p
     {
+
         readonly NeighborMatrices NM = new NeighborMatrices();
 
         //public static Dictionary<string, CartesianVector> CartesianLocation= new Dictionary<string, CartesianVector>(); // string is BL hardware Addr
 
-        public static List<Plugin.BLE.Abstractions.Contracts.IDevice> deviceList = new List<Plugin.BLE.Abstractions.Contracts.IDevice>();
+        
 
         private int numNeighs = 0;
         public static string lastSsid = "0,0";
@@ -55,11 +61,51 @@ namespace XamarinForms.LocationService.Services
 
         //Plugin.BLE.Abstractions.Contracts.IBluetoothLE current;
         //Plugin.BLE.Abstractions.Contracts.IAdapter adapter;
+        //public static List<string> mDeviceList = new List<string>();
+        // These are the main entry points to the API.
+        Plugin.BLE.Abstractions.Contracts.IBluetoothLE current;
+        Plugin.BLE.Abstractions.Contracts.IAdapter adapter;
+        public static List<Plugin.BLE.Abstractions.Contracts.IDevice> deviceList = new List<Plugin.BLE.Abstractions.Contracts.IDevice>();
+        // My own simple class to hold records detailing discovered devices.
+
+
+
+        private async Task BuildListOfBluetoothDevices()
+        {
+            deviceList.Clear();
+            CancellationTokenSource cts = new CancellationTokenSource();
+            adapter.ScanMode = (Plugin.BLE.Abstractions.Contracts.ScanMode)Android.Bluetooth.LE.ScanMode.LowLatency;
+            await adapter.StartScanningForDevicesAsync(cts.Token);
+        }
+
+        // Once you have devices in the above collection, look for the heart-rate ones like this. 
 
        
         public p2p()
         {
             Lock = new object();
+            //current = CrossBluetoothLE.Current;
+            //adapter = CrossBluetoothLE.Current.Adapter;
+            //adapter.ScanTimeout = 1000;
+            IBle ble = CrossBle.Createble();
+            // These event handlers need to be attached.
+            //adapter.StateChanged += BLEOnStateChanged; 
+            //adapter.ScanTimeoutElapsed += BLEAdapterScanTimeoutElapsed;
+            //adapter.DeviceDiscovered += BLEAdapterOnDeviceDiscovered; 
+            //adapter.DeviceDisconnected += BLEAdapterOnDeviceDisconnected;
+            //adapter.DeviceConnectionLost += BLEAdapter_OnDeviceConnectionLost;
+
+            ble.OnScanDevicesIn += (sender, device) =>
+            {
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    //use device.Name or Uuid or Rssi or connect dev
+                    IDev dev = device;
+                    lastSsid = dev.Name;
+                });
+            };
+            //start scan
+            ble.StartScanningForDevices();
 
             //StartTimer(3000);
             //current = CrossBluetoothLE.Current;
@@ -70,7 +116,42 @@ namespace XamarinForms.LocationService.Services
             StartGATT("percNode");
         }
 
-       
+        private void BLEAdapter_OnDeviceConnectionLost(object sender, DeviceErrorEventArgs e)
+        {
+            //throw new NotImplementedException();
+        }
+
+        private void BLEAdapterOnDeviceDisconnected(object sender, DeviceEventArgs e)
+        {
+            //throw new NotImplementedException();
+        }
+
+        private void BLEAdapterOnDeviceDiscovered(object sender, DeviceEventArgs e)
+        {
+            recvdFrom = _random.Next(0, 7);
+            try
+            {
+                adapter.StopScanningForDevicesAsync();
+                adapter.ConnectToDeviceAsync(deviceList[recvdFrom]);
+                if (deviceList[recvdFrom].Name == null)
+                {
+                }
+                else
+                {
+                    lastSsid = deviceList[recvdFrom].Name;
+                }
+            }
+            catch (DeviceConnectionException)
+            {
+
+            }
+        }
+
+        private void BLEAdapterScanTimeoutElapsed(object sender, EventArgs e)
+        {
+            //throw new NotImplementedException();
+        }
+
         public void StartTimer(int ms)
         {
             Device.StartTimer(TimeSpan.FromSeconds(ms), () =>
@@ -83,11 +164,11 @@ namespace XamarinForms.LocationService.Services
         public async Task GetNeighs()
         {
             numNeighs = 0;
-            deviceList.Clear();
+            //await BuildListOfBluetoothDevices();
             //await adapter.StartScanningForDevicesAsync();
             //ConnectToNeighbors(deviceList, numNeighs, adapter);
             //numNeighs = GetLikelyToBeHumanNeighCount(deviceList);
-            AndroidBluetoothSetLocalName(lastSsid);
+            //AndroidBluetoothSetLocalName(lastSsid);
             UpdateNames(recvdFrom, lastSsid);
            
         }
