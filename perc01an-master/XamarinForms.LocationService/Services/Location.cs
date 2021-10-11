@@ -65,6 +65,10 @@ namespace XamarinForms.LocationService.Services
             return L;            
         }
         
+        private interface Ip2p
+        {
+            
+        }
         public Location()
         {
         }

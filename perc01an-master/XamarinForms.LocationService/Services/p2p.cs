@@ -57,21 +57,13 @@ namespace XamarinForms.LocationService.Services
         public p2p()
         {
             Lock = new object();
-            StartTimer(3000);
+            //StartTimer(3000);
             current = CrossBluetoothLE.Current;
             adapter = CrossBluetoothLE.Current.Adapter;
             adapter.ScanTimeout = 1000;
-            adapter.DeviceDiscovered += (s, a) =>
-            {
-                //adapter.StopScanningForDevicesAsync();
-                if (!deviceList.Contains(a.Device))
-                {
-                    deviceList.Add(a.Device);
-                }
-            };
+            adapter.DeviceDiscovered += (s, a) => deviceList.Add(a.Device);
             Scanning = "|Scan:ON!";
             StartGATT("percNode");
-            adapter.StartScanningForDevicesAsync();
         }
 
 
@@ -88,11 +80,13 @@ namespace XamarinForms.LocationService.Services
         public async Task GetNeighs()
         {
             numNeighs = 0;
+            deviceList.Clear();
+            await adapter.StartScanningForDevicesAsync();
             ConnectToNeighbors(deviceList, numNeighs, adapter);
             numNeighs = GetLikelyToBeHumanNeighCount(deviceList);
+            AndroidBluetoothSetLocalName(lastSsid);
             UpdateNames(recvdFrom, lastSsid);
-            StopGATT();
-            AndroidBluetoothSetLocalName("hello-----" + lastSsid);
+           
         }
         private int GetLikelyToBeHumanNeighCount(List<IDevice> deviceList)
         {
@@ -106,16 +100,15 @@ namespace XamarinForms.LocationService.Services
             }
             return i;
         }
-        private static async void ConnectToNeighbors(List<Plugin.BLE.Abstractions.Contracts.IDevice> devices, int i,
-                                               Plugin.BLE.Abstractions.Contracts.IAdapter adapter)
+        private static void ConnectToNeighbors(List<Plugin.BLE.Abstractions.Contracts.IDevice> devices, int i, Plugin.BLE.Abstractions.Contracts.IAdapter adapter)
         {
             recvdFrom = _random.Next(0, 7);
             try
             {
+                adapter.StopScanningForDevicesAsync();
+                adapter.ConnectToDeviceAsync(devices[recvdFrom]);
                 if (devices[recvdFrom].Name == null)
                 {
-                    await adapter.ConnectToDeviceAsync(devices[recvdFrom]);
-                    lastSsid = devices[recvdFrom].Name;
                 }
                 else
                 {
