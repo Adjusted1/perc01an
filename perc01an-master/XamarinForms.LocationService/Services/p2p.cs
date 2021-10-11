@@ -14,8 +14,10 @@ using Plugin.BLE;
 using Plugin.BLE.Abstractions.EventArgs;
 using Android.OS;
 using Android.Runtime;
-using Plugin.BLE.Abstractions.Exceptions;
-using Plugin.BLE.Abstractions.Contracts;
+//using Plugin.BLE.Abstractions.Exceptions;
+//using Plugin.BLE.Abstractions.Contracts;
+using Android.Widget;
+using Android.Content;
 
 namespace XamarinForms.LocationService.Services
 {
@@ -51,23 +53,24 @@ namespace XamarinForms.LocationService.Services
 
         public static bool debugging = false;
 
-        Plugin.BLE.Abstractions.Contracts.IBluetoothLE current;
-        Plugin.BLE.Abstractions.Contracts.IAdapter adapter;
+        //Plugin.BLE.Abstractions.Contracts.IBluetoothLE current;
+        //Plugin.BLE.Abstractions.Contracts.IAdapter adapter;
 
+       
         public p2p()
         {
             Lock = new object();
+
             //StartTimer(3000);
-            current = CrossBluetoothLE.Current;
-            adapter = CrossBluetoothLE.Current.Adapter;
-            adapter.ScanTimeout = 1000;
-            adapter.DeviceDiscovered += (s, a) => deviceList.Add(a.Device);
+            //current = CrossBluetoothLE.Current;
+            //adapter = CrossBluetoothLE.Current.Adapter;
+            //adapter.ScanTimeout = 1000;
+            //adapter.DeviceDiscovered += (s, a) => deviceList.Add(a.Device);
             Scanning = "|Scan:ON!";
             StartGATT("percNode");
         }
 
-
-
+       
         public void StartTimer(int ms)
         {
             Device.StartTimer(TimeSpan.FromSeconds(ms), () =>
@@ -81,46 +84,46 @@ namespace XamarinForms.LocationService.Services
         {
             numNeighs = 0;
             deviceList.Clear();
-            await adapter.StartScanningForDevicesAsync();
-            ConnectToNeighbors(deviceList, numNeighs, adapter);
-            numNeighs = GetLikelyToBeHumanNeighCount(deviceList);
+            //await adapter.StartScanningForDevicesAsync();
+            //ConnectToNeighbors(deviceList, numNeighs, adapter);
+            //numNeighs = GetLikelyToBeHumanNeighCount(deviceList);
             AndroidBluetoothSetLocalName(lastSsid);
             UpdateNames(recvdFrom, lastSsid);
            
         }
-        private int GetLikelyToBeHumanNeighCount(List<IDevice> deviceList)
-        {
-            int i = 0;
-            foreach (var device in deviceList)
-            {
-                if (device.NativeDevice != null)
-                {
-                    i++;
-                }
-            }
-            return i;
-        }
-        private static void ConnectToNeighbors(List<Plugin.BLE.Abstractions.Contracts.IDevice> devices, int i, Plugin.BLE.Abstractions.Contracts.IAdapter adapter)
-        {
-            recvdFrom = _random.Next(0, 7);
-            try
-            {
-                adapter.StopScanningForDevicesAsync();
-                adapter.ConnectToDeviceAsync(devices[recvdFrom]);
-                if (devices[recvdFrom].Name == null)
-                {
-                }
-                else
-                {
-                    lastSsid = devices[recvdFrom].Name;
-                }
-            }
-            catch (DeviceConnectionException e)
-            {
+        //private int GetLikelyToBeHumanNeighCount(List<IDevice> deviceList)
+        //{
+        //    int i = 0;
+        //    foreach (var device in deviceList)
+        //    {
+        //        if (device.NativeDevice != null)
+        //        {
+        //            i++;
+        //        }
+        //    }
+        //    return i;
+        //}
+        //private static void ConnectToNeighbors(List<Plugin.BLE.Abstractions.Contracts.IDevice> devices, int i, Plugin.BLE.Abstractions.Contracts.IAdapter adapter)
+        //{
+        //    recvdFrom = _random.Next(0, 7);
+        //    try
+        //    {
+        //        adapter.StopScanningForDevicesAsync();
+        //        adapter.ConnectToDeviceAsync(devices[recvdFrom]);
+        //        if (devices[recvdFrom].Name == null)
+        //        {
+        //        }
+        //        else
+        //        {
+        //            lastSsid = devices[recvdFrom].Name;
+        //        }
+        //    }
+        //    catch (DeviceConnectionException e)
+        //    {
 
-            }
+        //    }
 
-        }
+        //}
         private static void GetPeerNames()
         {
 

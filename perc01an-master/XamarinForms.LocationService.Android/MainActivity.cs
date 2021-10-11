@@ -6,14 +6,47 @@ using Android.Content;
 using Xamarin.Forms;
 using XamarinForms.LocationService.Droid.Services;
 using XamarinForms.LocationService.Messages;
+using Android.Bluetooth;
+using Android.Widget;
+using System.Collections.Generic;
+using System;
+using System.IO;
 
 namespace XamarinForms.LocationService.Droid
 {
     [Activity(Label = "XamarinForms.LocationService", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize )]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
+
+
         Intent serviceIntent;
         private const int RequestCode = 5469;
+
+
+        BluetoothAdapter btAdapter;
+        static ArrayAdapter<string> newDevicesArrayAdapter;
+        public static List<string> mDeviceList = new List<string>();
+        DeviceDiscoveredReceiver receiver;
+
+        class DeviceDiscoveredReceiver : BroadcastReceiver
+        {
+            Activity mainActivity;
+            public DeviceDiscoveredReceiver(Activity activity)
+            {
+                this.mainActivity = activity;
+            }
+            public override void OnReceive(Context context, Intent intent)
+            {
+                String action = intent.Action;
+                if (BluetoothDevice.ActionFound.Equals(action))
+                {
+                    BluetoothDevice device = (BluetoothDevice)intent.GetParcelableExtra(BluetoothDevice.ExtraDevice);
+                    mDeviceList.Add(device.Name + ";" + device.Address);
+                    
+                }
+            }
+        }
+
         protected override void OnCreate(Bundle savedInstanceState)
         {
 
@@ -37,7 +70,20 @@ namespace XamarinForms.LocationService.Droid
                 intent.SetFlags(ActivityFlags.NewTask);
                 this.StartActivity(intent);
             }
-            
+
+
+            receiver = new DeviceDiscoveredReceiver(this);
+            IntentFilter filter = new IntentFilter(BluetoothDevice.ActionFound);
+            RegisterReceiver(receiver, filter);
+            btAdapter = BluetoothAdapter.DefaultAdapter;
+
+            if (btAdapter.IsDiscovering)
+            {
+                btAdapter.CancelDiscovery();
+            }
+
+            // Request discover from BluetoothAdapter
+            var x = btAdapter.StartDiscovery();
 
             LoadApplication(new App());
         }
