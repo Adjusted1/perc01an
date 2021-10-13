@@ -89,9 +89,25 @@ namespace XamarinForms.LocationService.Services
             var location = await Geolocation.GetLocationAsync(request);
             var lat = location.Latitude;
             var lng = location.Longitude;
-            
-            
-            
+
+            double dist0 = 0.0;
+            double dist1 = 0.0;
+            double dist2 = 0.0;
+            double dist3 = 0.0;
+            double dist4 = 0.0;
+            double dist5 = 0.0;
+            double dist6 = 0.0;
+            double dist7 = 0.0;
+
+            bool perc0 = false;
+            bool perc1 = false;
+            bool perc2 = false;
+            bool perc3 = false;
+            bool perc4 = false;
+            bool perc5 = false;
+            bool perc6 = false;
+            bool perc7 = false;
+
             p2p = new p2p();
             {
                 while (!stopping)
@@ -112,20 +128,61 @@ namespace XamarinForms.LocationService.Services
                     {
                         try
                         {
-
                             if (location != null)
                             {
                                 double testDistance = CalculateDistance(location, location);
-                                double dist0 = CalculateDistance(LocFomNeighStr(p2p.Ssidneighzero), location);
-                                double dist1 = CalculateDistance(LocFomNeighStr(p2p.Ssidneighone), location);
-                                double dist2 = CalculateDistance(LocFomNeighStr(p2p.Ssidneightwo), location);
-                                double dist3 = CalculateDistance(LocFomNeighStr(p2p.Ssidneighthree), location);
-                                double dist4 = CalculateDistance(LocFomNeighStr(p2p.Ssidneighfour), location);
-                                double dist5 = CalculateDistance(LocFomNeighStr(p2p.Ssidneighfive), location);
-                                double dist6 = CalculateDistance(LocFomNeighStr(p2p.Ssidneighsix), location);
-                                double dist7 = CalculateDistance(LocFomNeighStr(p2p.Ssidneighseven), location);
+                                if (p2p.Ssidneighzero.Contains(','))
+                                {
+                                    perc0 = true;
+                                    dist0 = CalculateDistance(LocFomNeighStr(p2p.Ssidneighzero), location);
+                                } 
+                                else { perc0 = false; }
+                                if (p2p.Ssidneighone.Contains(','))
+                                {
+                                    perc1 = true;
+                                    dist1 = CalculateDistance(LocFomNeighStr(p2p.Ssidneighone), location);
+                                }
+                                else { perc1 = false; }
+                                if (p2p.Ssidneightwo.Contains(','))
+                                {
+                                    perc2 = true;
+                                    dist2 = CalculateDistance(LocFomNeighStr(p2p.Ssidneightwo), location);
+                                }
+                                else { perc2 = false; }
+                                if (p2p.Ssidneighthree.Contains(','))
+                                {
+                                    perc3 = true;
+                                    dist3 = CalculateDistance(LocFomNeighStr(p2p.Ssidneighthree), location);
+                                }
+                                else { perc3 = false; }
+                                if (p2p.Ssidneighfour.Contains(','))
+                                {
+                                    perc4 = true;
+                                    dist4 = CalculateDistance(LocFomNeighStr(p2p.Ssidneighfour), location);
+                                }
+                                else { perc4 = false; }
+                                if (p2p.Ssidneighfive.Contains(','))
+                                {
+                                    perc5 = true;
+                                    dist5 = CalculateDistance(LocFomNeighStr(p2p.Ssidneighfive), location);
+                                }
+                                else { perc5 = false; }
+                                if (p2p.Ssidneighsix.Contains(','))
+                                {
+                                    perc6 = true;
+                                    dist6 = CalculateDistance(LocFomNeighStr(p2p.Ssidneighsix), location);
+                                }
+                                else { perc6 = false; }
+                                if (p2p.Ssidneighseven.Contains(','))
+                                {
+                                    perc7 = true;
+                                    dist7 = CalculateDistance(LocFomNeighStr(p2p.Ssidneighseven), location);
+                                }
+                                else { perc7 = false; }
+
                                 /*
-                                 *  Latitude = location.Latitude,
+                                 *  
+                                 *      Latitude = location.Latitude,
                                         Longitude = location.Longitude,
                                         Ssid = location.Latitude.ToString() + "," + location.Longitude.ToString() + " " + "No Excessive Accelerations Detected",
                                         SsidNeighZero = (Math.Truncate(dist0 * 100) / 100).ToString() + "km",
@@ -142,16 +199,29 @@ namespace XamarinForms.LocationService.Services
                                 {
                                     Latitude = location.Latitude,
                                     Longitude = location.Longitude,
-                                    Ssid = location.Latitude.ToString() + "," + location.Longitude.ToString(),
-                                    SsidNeighZero = p2p.Ssidneighzero,
-                                    SsidNeighOne = p2p.Ssidneighone,
-                                    SsidNeighTwo = p2p.Ssidneightwo,
-                                    SsidNeighThree = p2p.Ssidneighthree,
-                                    SsidNeighFour = p2p.Ssidneighfour,
-                                    SsidNeighFive = p2p.Ssidneighfive,
-                                    SsidNeighSix = p2p.Ssidneighsix,
-                                    SsidNeighSeven = p2p.Ssidneighseven,
+                                    Ssid = location.Latitude.ToString() + "," + location.Longitude.ToString() + " " + "No Excessive Accelerations Detected",
+                                   
+                                    SsidNeighZero = (Math.Truncate(dist0 * 100) / 100).ToString() + "km",
+                                    SsidNeighOne = (Math.Truncate(dist1 * 100) / 100).ToString() + "km",
+                                    SsidNeighTwo = (Math.Truncate(dist2 * 100) / 100).ToString() + "km",
+                                    SsidNeighThree = (Math.Truncate(dist3 * 100) / 100).ToString() + "km",
+                                    SsidNeighFour = (Math.Truncate(dist4 * 100) / 100).ToString() + "km",
+                                    SsidNeighFive = (Math.Truncate(dist5 * 100) / 100).ToString() + "km",
+                                    SsidNeighSix = (Math.Truncate(dist6 * 100) / 100).ToString() + "km",
+                                    SsidNeighSeven = (Math.Truncate(dist7 * 100) / 100).ToString() + "km",
                                     Scanning = p2p.Scanning
+                                    //Latitude = location.Latitude,
+                                    //Longitude = location.Longitude,
+                                    //Ssid = location.Latitude.ToString() + "," + location.Longitude.ToString(),
+                                    //SsidNeighZero = p2p.Ssidneighzero,
+                                    //SsidNeighOne = p2p.Ssidneighone,
+                                    //SsidNeighTwo = p2p.Ssidneightwo,
+                                    //SsidNeighThree = p2p.Ssidneighthree,
+                                    //SsidNeighFour = p2p.Ssidneighfour,
+                                    //SsidNeighFive = p2p.Ssidneighfive,
+                                    //SsidNeighSix = p2p.Ssidneighsix,
+                                    //SsidNeighSeven = p2p.Ssidneighseven,
+                                    //Scanning = p2p.Scanning
                                 };
                                 Device.BeginInvokeOnMainThread(() =>
                                 {
