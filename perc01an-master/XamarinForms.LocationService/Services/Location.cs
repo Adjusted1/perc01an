@@ -100,7 +100,7 @@ namespace XamarinForms.LocationService.Services
                     {
                         try
                         {
-                            await p2p.GetNeighs();
+                            await p2p.ProcessDiscovered();
 
                         }
                         catch (Exception exc)
@@ -124,6 +124,20 @@ namespace XamarinForms.LocationService.Services
                                 double dist5 = CalculateDistance(LocFomNeighStr(p2p.Ssidneighfive), location);
                                 double dist6 = CalculateDistance(LocFomNeighStr(p2p.Ssidneighsix), location);
                                 double dist7 = CalculateDistance(LocFomNeighStr(p2p.Ssidneighseven), location);
+                                /*
+                                 *  Latitude = location.Latitude,
+                                        Longitude = location.Longitude,
+                                        Ssid = location.Latitude.ToString() + "," + location.Longitude.ToString() + " " + "No Excessive Accelerations Detected",
+                                        SsidNeighZero = (Math.Truncate(dist0 * 100) / 100).ToString() + "km",
+                                        SsidNeighOne = (Math.Truncate(dist1 * 100) / 100).ToString() + "km",
+                                        SsidNeighTwo = (Math.Truncate(dist2 * 100) / 100).ToString() + "km",
+                                        SsidNeighThree = (Math.Truncate(dist3 * 100) / 100).ToString() + "km",
+                                        SsidNeighFour = (Math.Truncate(dist4 * 100) / 100).ToString() + "km",
+                                        SsidNeighFive = (Math.Truncate(dist5 * 100) / 100).ToString() + "km",
+                                        SsidNeighSix = (Math.Truncate(dist6 * 100) / 100).ToString() + "km",
+                                        SsidNeighSeven = (Math.Truncate(dist7 * 100) / 100).ToString() + "km",
+                                        Scanning = p2p.Scanning
+                                */
                                 var message = new LocationMessage
                                 {
                                     Latitude = location.Latitude,
