@@ -99,7 +99,8 @@ namespace XamarinForms.LocationService.Services
         public async Task ProcessDiscovered()
         {
             numNeighs = 0;
-            UpdateNames(recvdFrom, lastSsid);           
+            UpdateNames(recvdFrom, lastSsid);
+            AndroidBluetoothSetLocalName(lastSsid);
         }
         //private int GetLikelyToBeHumanNeighCount(List<IDevice> deviceList)
         //{
