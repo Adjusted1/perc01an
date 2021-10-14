@@ -80,7 +80,7 @@ namespace XamarinForms.LocationService.Services
             };
 
             ble.StartScanningForDevices();
-            StartTimer(10000);
+            //StartTimer(10000);
             Scanning = "|Scan:ON!";
             StartGATT("percNode");
         }
@@ -100,10 +100,10 @@ namespace XamarinForms.LocationService.Services
         {
             numNeighs = 0;
             UpdateNames(recvdFrom, lastSsid);
-            if (ReleaseHold)
-            {
+            //if (ReleaseHold)
+            //{
                 AndroidBluetoothSetLocalName(lastSsid);
-            }
+            //}
         }
         //private int GetLikelyToBeHumanNeighCount(List<IDevice> deviceList)
         //{
