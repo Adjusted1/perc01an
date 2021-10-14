@@ -42,12 +42,13 @@ namespace XamarinForms.LocationService.Droid
 
             SetServiceMethods();
 
-            if (Build.VERSION.SdkInt >= BuildVersionCodes.M && !Android.Provider.Settings.CanDrawOverlays(this))
+            if (/*Build.VERSION.SdkInt >= BuildVersionCodes.M && */!Android.Provider.Settings.CanDrawOverlays(this))
             {
                 var intent = new Intent(Android.Provider.Settings.ActionManageOverlayPermission);
                 intent.SetFlags(ActivityFlags.NewTask);
                 this.StartActivity(intent);
             }
+
 
 
            
