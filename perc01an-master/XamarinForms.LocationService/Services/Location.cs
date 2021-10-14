@@ -112,18 +112,18 @@ namespace XamarinForms.LocationService.Services
             {
                 while (!stopping)
                 {
-                    await Task.Run(async () =>
-                    {
-                        try
-                        {
-                            await p2p.ProcessDiscovered();
+                    //await Task.Run(async () =>
+                    //{
+                    //    try
+                    //    {
+                    //        await p2p.ProcessDiscovered();
 
-                        }
-                        catch (Exception exc)
-                        {
+                    //    }
+                    //    catch (Exception exc)
+                    //    {
 
-                        }
-                    }, token);
+                    //    }
+                    //}, token);
                     await Task.Run(async () =>
                     {
                         try
