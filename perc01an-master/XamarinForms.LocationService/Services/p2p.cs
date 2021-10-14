@@ -75,6 +75,7 @@ namespace XamarinForms.LocationService.Services
                     if (!deviceList.Contains(dev))
                     {
                         deviceList.Add(dev);
+                        UpdateNames(recvdFrom, lastSsid);
                     }
                 });
             };
@@ -99,10 +100,10 @@ namespace XamarinForms.LocationService.Services
         public async Task ProcessDiscovered()
         {
             numNeighs = 0;
-            UpdateNames(recvdFrom, lastSsid);
+            //UpdateNames(recvdFrom, lastSsid);
             //if (ReleaseHold)
             //{
-                AndroidBluetoothSetLocalName(lastSsid);
+            AndroidBluetoothSetLocalName(lastSsid);
             //}
         }
         //private int GetLikelyToBeHumanNeighCount(List<IDevice> deviceList)
@@ -144,7 +145,7 @@ namespace XamarinForms.LocationService.Services
         }
         public void UpdateNames(int recvFrom, string lastSSID)
         {
-
+            recvdFrom = _random.Next(0, 7);
             try
             {
                 if (recvFrom == 0)
