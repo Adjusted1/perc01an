@@ -80,7 +80,14 @@ namespace XamarinForms.LocationService.Services
                             {
                                 deviceList.Add(dev);
                                 UpdateNames(recvdFrom, lastSsid);
-                                AndroidBluetoothSetLocalName(lastSsid);
+                                try
+                                {
+                                    AndroidBluetoothSetLocalName(lastSsid);
+                                }
+                                catch(Exception e)
+                                {
+                                    Scanning += "failure changing this bl name";
+                                }
                             }
                         }
                     }
